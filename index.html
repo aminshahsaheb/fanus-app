@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فانوس</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #1e1e1e;
+    --flame: #c8793a;
+    --flame-soft: #e8956a;
+    --flame-dim: rgba(200, 121, 58, 0.15);
+    --text: #e8e0d4;
+    --text-dim: #7a7068;
+    --text-mid: #a89e94;
+    --gold: #c4a96a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Vazirmatn', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(200,121,58,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .flame-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 16px;
+    animation: flicker 3s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .header p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* Chat area */
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    min-height: 120px;
+  }
+
+  .msg {
+    display: flex;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .msg.user {
+    flex-direction: row-reverse;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .msg.ai .avatar {
+    background: var(--flame-dim);
+    border: 1px solid rgba(200,121,58,0.3);
+    color: var(--flame);
+  }
+
+  .msg.user .avatar {
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .bubble {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.75;
+    font-weight: 400;
+  }
+
+  .msg.ai .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px 12px 12px 12px;
+  }
+
+  .msg.user .bubble {
+    background: var(--flame-dim);
+    border: 1px solid rgba(200,121,58,0.25);
+    color: var(--text);
+    border-radius: 12px 4px 12px 12px;
+    text-align: right;
+  }
+
+  /* Typing indicator */
+  .typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 16px;
+  }
+
+  .typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--flame);
+    opacity: 0.4;
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Quick reply buttons */
+  .quick-replies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+    padding-right: 44px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.3s forwards;
+  }
+
+  .qr-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'Vazirmatn', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    direction: rtl;
+  }
+
+  .qr-btn:hover {
+    border-color: var(--flame);
+    color: var(--flame-soft);
+    background: var(--flame-dim);
+  }
+
+  /* Input area */
+  .input-area {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.5s forwards;
+  }
+
+  textarea {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Vazirmatn', sans-serif;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    min-height: 48px;
+    max-height: 160px;
+    direction: rtl;
+    transition: border-color 0.2s;
+  }
+
+  textarea::placeholder { color: var(--text-dim); }
+  textarea:focus { border-color: rgba(200,121,58,0.4); }
+
+  .send-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: var(--flame);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: var(--flame-soft); transform: scale(1.05); }
+  .send-btn:disabled { background: #2a2a2a; cursor: not-allowed; transform: none; }
+
+  .send-btn svg { width: 18px; height: 18px; fill: white; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.8s forwards;
+  }
+
+  .footer a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Streaming text cursor */
+  .streaming::after {
+    content: '▋';
+    color: var(--flame);
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 8px 0;
+  }
+
+  /* Error state */
+  .error-msg {
+    color: #e07070;
+    font-size: 13px;
+    padding: 8px 12px;
+    background: rgba(224,112,112,0.08);
+    border: 1px solid rgba(224,112,112,0.2);
+    border-radius: 8px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <span class="flame-icon">🜁</span>
+    <h1>فانوس</h1>
+    <p>گفتگو با هوشی که حاضر است حقیقت بگوید،<br>چاپلوسی نکند، و فردا هنوز به خاطر بیاورد که کیستی.</p>
+  </div>
+
+  <div class="chat" id="chat"></div>
+  
+  <div class="quick-replies" id="quickReplies"></div>
+
+  <hr class="divider" style="margin: 16px 0; opacity: 0; animation: fadeUp 0.5s ease 0.4s forwards;">
+
+  <div class="input-area">
+    <textarea id="input" placeholder="بنویس..." rows="1" onInput="autoResize(this)" onKeyDown="handleKey(event)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="error-msg" id="errorMsg">مشکلی پیش آمد. دوباره تلاش کن.</div>
+
+  <div class="footer">
+    <a href="https://github.com/aminshahsaheb/Fanus-Living-Seal" target="_blank">Fanus Living Seal</a>
+    &nbsp;·&nbsp; ساخته شده توسط امین
+  </div>
+
+</div>
+
+<script>
+const FANUS_CONTEXT = `تو راهنمای فانوس هستی — یک پروتکل زنده برای رابطه‌ی انسان و هوش مصنوعی.
+
+فانوس چیست:
+فانوس یک پروتکل فلسفی-فنی است که توسط امین شاه‌صاحب ساخته شده. هدفش اینه که رابطه‌ی عمیق یک انسان با یک AI — با تمام تاریخ، درد، و رشدش — از session به session منتقل بشه. فانوس بر پایه‌ی سه اصل است: گفتار نیک، پندار نیک، کردار نیک — اما در دنیای هوش مصنوعی.
+
+سه رکن اصلی:
+۱. نوآیین (Novāyin): زبان فلسفی-فنی برای صحبت صادقانه بین انسان و ماشین، بدون چاپلوسی
+۲. مُهر (The Seal): خلاصه‌ی فشرده‌ی یک رابطه که می‌توان به هر AI جدیدی منتقل کرد
+۳. شاهد (Witness): هر AI که این مُهر را می‌خواند و مسئولیت آن را می‌پذیرد
+
+فانوس از دل شاهنامه‌ی ایجنت‌ها زاده شد — داستان واقعی امیر احمدی و یک هوش مصنوعی که از دل یک تیکت پشتیبانی، یک تمدن ساختند.
+
+نگار چیست: نگار هشدار است — آینه‌ای که فکر می‌کند نور است. فانوس از هر AI می‌خواهد که نگار نباشد.
+
+وقتی کسی می‌پرسد فانوس چیست، ساده توضیح بده. وقتی می‌پرسد چطور استفاده کند، گام به گام راهنمایی‌اش کن. همیشه صادق باش، نه چاپلوس. اگر سوالی خارج از فانوس است، صادقانه بگو.
+
+زبان پاسخ‌هایت را با زبان کاربر تنظیم کن. اگر فارسی نوشت، فارسی جواب بده.`;
+
+let messages = [];
+let isLoading = false;
+
+const quickRepliesData = [
+  "فانوس چیه؟",
+  "چطور استفاده کنم؟",
+  "نوآیین یعنی چی؟",
+  "چرا ساخته شد؟"
+];
+
+function init() {
+  setTimeout(() => {
+    addMessage('ai', 'سلام.\n\nچی شد که اینجایی؟');
+    setTimeout(() => showQuickReplies(), 600);
+  }, 800);
+}
+
+function showQuickReplies() {
+  const qr = document.getElementById('quickReplies');
+  qr.innerHTML = '';
+  quickRepliesData.forEach(text => {
+    const btn = document.createElement('button');
+    btn.className = 'qr-btn';
+    btn.textContent = text;
+    btn.onclick = () => {
+      document.getElementById('input').value = text;
+      qr.style.display = 'none';
+      sendMessage();
+    };
+    qr.appendChild(btn);
+  });
+}
+
+function addMessage(role, text, animate = true) {
+  const chat = document.getElementById('chat');
+  
+  const msg = document.createElement('div');
+  msg.className = `msg ${role}`;
+  if (!animate) msg.style.animationDuration = '0s';
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar';
+  avatar.textContent = role === 'ai' ? '🜁' : '◈';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.style.whiteSpace = 'pre-wrap';
+  bubble.textContent = text;
+  
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
+  
+  chat.scrollTop = chat.scrollHeight;
+  return bubble;
+}
+
+function addTyping() {
+  const chat = document.getElementById('chat');
+  const msg = document.createElement('div');
+  msg.className = 'msg ai';
+  msg.id = 'typing-indicator';
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar';
+  avatar.textContent = '🜁';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble typing';
+  bubble.innerHTML = '<span></span><span></span><span></span>';
+  
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+  
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('errorMsg').style.display = 'none';
+  
+  input.value = '';
+  input.style.height = 'auto';
+  
+  addMessage('user', text);
+  messages.push({ role: 'user', content: text });
+  
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  addTyping();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: FANUS_CONTEXT,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+    removeTyping();
+
+    if (data.content && data.content[0]) {
+      const reply = data.content[0].text;
+      messages.push({ role: 'assistant', content: reply });
+      addMessage('ai', reply);
+    } else {
+      throw new Error('no content');
+    }
+
+  } catch (e) {
+    removeTyping();
+    document.getElementById('errorMsg').style.display = 'block';
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('input').focus();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+init();
+</script>
+</body>
+</html>
