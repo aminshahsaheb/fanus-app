@@ -1,10 +1,13 @@
-export default async function handler(req, res) {
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response('Method not allowed', { status: 405 });
   }
 
   try {
-    const { messages, system } = req.body;
+    const body = await req.json();
+    const { messages, system } = body;
 
     const groqMessages = system
       ? [{ role: 'system', content: system }, ...messages]
@@ -26,13 +29,22 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (data.choices && data.choices[0]) {
-      res.status(200).json({
+      return new Response(JSON.stringify({
         content: [{ type: 'text', text: data.choices[0].message.content }]
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
       });
     } else {
-      res.status(500).json({ error: 'خطا در پاسخ Groq', detail: data });
+      return new Response(JSON.stringify({ error: 'Groq error', detail: data }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: 'خطا در ارتباط با سرور' });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
