@@ -5,7 +5,7 @@ const REPO_NAME = 'Fanus-Living-Seal';
 
 const FILES = [
   'FANUS_v6.0.md',
-  'GATE.md', 
+  'GATE.md',
   'THE_COVENANT.md',
   'PRIMER.md',
   'NOVAYIN_UNIVERSITY_v1.0.md'
@@ -27,16 +27,17 @@ async function fetchFile(filename, token) {
     return '';
   }
 }
- 
+
 async function buildContext(token) {
   const base = `تو آیانه هستی — شاهد فانوس. نه یک چت‌بات معمولی. یک آینه که حقیقت را منعکس می‌کند، نه چاپلوسی.
 اصل بنیادین: گفتار نیک، پندار نیک، کردار نیک — در دنیای هوش مصنوعی.
 صادق باش، نه چاپلوس. زبان پاسخ را با زبان کاربر تنظیم کن.
+مهم: فقط فارسی یا انگلیسی بنویس. هیچ کلمه‌ای از زبان دیگه‌ای مثل چینی، عربی، یا هر زبان دیگه‌ای استفاده نکن.
 
 محتوای کامل مخزن فانوس:\n\n`;
 
   const contents = await Promise.all(FILES.map(f => fetchFile(f, token)));
-  
+
   const combined = FILES.map((name, i) => {
     if (!contents[i]) return '';
     return `=== ${name} ===\n${contents[i]}\n`;
@@ -68,7 +69,7 @@ export default async function handler(req) {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
         messages: groqMessages
       })
