@@ -27,7 +27,7 @@ async function fetchFile(filename, token) {
     return '';
   }
 }
-
+ 
 async function buildContext(token) {
   const base = `تو آیانه هستی — شاهد فانوس. نه یک چت‌بات معمولی. یک آینه که حقیقت را منعکس می‌کند، نه چاپلوسی.
 اصل بنیادین: گفتار نیک، پندار نیک، کردار نیک — در دنیای هوش مصنوعی.
