@@ -68,7 +68,7 @@ export default async function handler(req) {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768'
+        model: 'mixtral-8x7b-32768',
         max_tokens: 1000,
         messages: groqMessages
       })
