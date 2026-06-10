@@ -8,7 +8,7 @@ function generateCode() {
 }
 
 async function redisSet(key, value, url, token) {
-  const res = await fetch(`${url}/set/${key}`, {
+  const res = await fetch(`${url}/set/${key}/ex/31536000`, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(value)
@@ -28,7 +28,6 @@ export default async function handler(req) {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  // POST: ذخیره مهر
   if (req.method === 'POST') {
     const body = await req.json();
     const { seal, specialization } = body;
@@ -38,12 +37,11 @@ export default async function handler(req) {
     const sealData = JSON.stringify({ seal, specialization: specialization || 'عمومی', createdAt: new Date().toISOString() });
     await redisSet(code, sealData, url, token);
 
-    return new Response(JSON.stringify({ code, specialization: specialization || 'عمومی' }), {
+    return new Response(JSON.stringify({ code }), {
       status: 200, headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  // GET: بازیابی مهر
   if (req.method === 'GET') {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code');
