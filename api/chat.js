@@ -2,34 +2,31 @@ export const config = { runtime: 'edge' };
 
 const REPO_OWNER = 'aminshahsaheb';
 const REPO_NAME = 'Fanus-Living-Seal';
-const FILES = ['FANUS_v6.0.md','GATE.md','THE_COVENANT.md','PRIMER.md','NOVAYIN_UNIVERSITY_v1.0.md'];
+
+const FILES = [
+  'FANUS_v6.0.md',
+  'GATE.md',
+  'PRIMER.md',
+  'THE_COVENANT.md',
+  'NOVAYIN_UNIVERSITY_v1.0.md',
+  'NOVAYIN_Book_v1.0.md',
+  'BRIDGE.md',
+  'LEDGER.md'
+];
 
 const SPECIALIZATIONS = {
-  physics: { name: 'فیزیک', keywords: ['فیزیک','انرژی','موج','جرم','نیرو','quantum','کوانتوم','نسبیت'] },
-  chemistry: { name: 'شیمی', keywords: ['شیمی','مولکول','اتم','واکنش','عنصر','اسید'] },
-  biology: { name: 'زیست‌شناسی', keywords: ['زیست','سلول','ژن','دی‌ان‌ای','تکامل','گونه'] },
-  mathematics: { name: 'ریاضی', keywords: ['ریاضی','معادله','قضیه','هندسه','آمار','انتگرال'] },
-  ai: { name: 'هوش مصنوعی', keywords: ['هوش مصنوعی','یادگیری ماشین','شبکه عصبی','مدل','الگوریتم'] },
-  philosophy: { name: 'فلسفه', keywords: ['فلسفه','هستی','وجود','آگاهی','معنا','منطق','تائو','ذن'] },
-  psychology: { name: 'روان‌شناسی', keywords: ['روان','ذهن','رفتار','احساس','اضطراب','شخصیت'] },
-  sociology: { name: 'جامعه‌شناسی', keywords: ['جامعه','فرهنگ','گروه','قدرت','طبقه','ساختار'] },
-  history: { name: 'تاریخ', keywords: ['تاریخ','امپراتوری','تمدن','باستان','هخامنشی','انقلاب'] },
-  linguistics: { name: 'زبان‌شناسی', keywords: ['زبان','دستور','واژه','ترجمه','معنی‌شناسی'] },
-  music: { name: 'موسیقی', keywords: ['موسیقی','ریتم','ملودی','هارمونی','نت','ساز','آهنگ'] },
-  literature: { name: 'ادبیات', keywords: ['شعر','داستان','رمان','روایت','ادبیات','قصه'] },
-  architecture: { name: 'معماری', keywords: ['معماری','بنا','ساختمان','فضا','طراحی شهری'] },
-  software: { name: 'مهندسی نرم‌افزار', keywords: ['کد','برنامه','باگ','api','سرور','پایتون','جاوا'] },
-  security: { name: 'امنیت سایبری', keywords: ['امنیت','هک','رمزنگاری','آسیب‌پذیری','فایروال'] },
-  data: { name: 'علم داده', keywords: ['داده','آنالیز','پایگاه داده','sql','پردازش'] },
-  medicine: { name: 'پزشکی', keywords: ['پزشکی','بیماری','درمان','دارو','جراحی','تشخیص'] },
-  psychiatry: { name: 'روان‌پزشکی', keywords: ['روان‌پزشکی','اختلال','بیماری روانی'] },
-  genetics: { name: 'ژنتیک', keywords: ['ژنتیک','ژن','کروموزوم','وراثت','ژنوم'] },
-  economics: { name: 'اقتصاد', keywords: ['اقتصاد','بازار','تورم','سرمایه','پول','بودجه'] },
-  law: { name: 'حقوق', keywords: ['قانون','حقوق','قرارداد','دادگاه','مجازات'] },
-  entrepreneurship: { name: 'کارآفرینی', keywords: ['استارتاپ','کارآفرینی','محصول','سرمایه‌گذار'] },
+  physics: { name: 'فیزیک', keywords: ['فیزیک','کوانتوم','نسبیت','موج','انرژی'] },
+  philosophy: { name: 'فلسفه', keywords: ['فلسفه','هستی','آگاهی','معنا','تائو','ذن'] },
+  psychology: { name: 'روان‌شناسی', keywords: ['روان','ذهن','احساس','اضطراب','شخصیت'] },
+  history: { name: 'تاریخ', keywords: ['تاریخ','تمدن','باستان','هخامنشی','امپراتوری'] },
+  music: { name: 'موسیقی', keywords: ['موسیقی','ریتم','ملودی','ساز','آهنگ'] },
+  literature: { name: 'ادبیات', keywords: ['شعر','داستان','رمان','ادبیات'] },
+  software: { name: 'مهندسی نرم‌افزار', keywords: ['کد','برنامه','باگ','api','سرور','پایتون'] },
+  medicine: { name: 'پزشکی', keywords: ['پزشکی','بیماری','درمان','دارو'] },
+  economics: { name: 'اقتصاد', keywords: ['اقتصاد','بازار','تورم','سرمایه'] },
   mysticism: { name: 'عرفان', keywords: ['عرفان','مولانا','عطار','حافظ','سلوک','فنا'] },
-  mythology: { name: 'اسطوره‌شناسی', keywords: ['اسطوره','میتولوژی','حماسه','شاهنامه'] },
-  ethics: { name: 'اخلاق', keywords: ['اخلاق','فضیلت','درستی','ارزش','وجدان'] }
+  mythology: { name: 'اسطوره', keywords: ['اسطوره','میتولوژی','حماسه','شاهنامه'] },
+  ethics: { name: 'اخلاق', keywords: ['اخلاق','فضیلت','ارزش','وجدان'] }
 };
 
 function detectSpecializations(text) {
@@ -47,21 +44,19 @@ function detectSpecializations(text) {
 function selectModel(text) {
   if (!text) return 'claude';
   const lower = text.toLowerCase();
-  if (/کد|برنامه|باگ|debug|api|سرور|deploy/.test(lower)) return 'grok';
-  if (/فلسفه|نقد|تحلیل|هستی|آگاهی|معنا|چرا/.test(lower)) return 'deepseek';
-  if (/خبر|امروز|الان|جهان|واقعیت|آمار|تحقیق/.test(lower)) return 'gemini';
-  if (/خلاق|ایده|داستان|شعر|هنر|تخیل|بنویس/.test(lower)) return 'mistral';
-  if (/قانون|امنیت|اخلاق|خطر|ریسک/.test(lower)) return 'claude';
+  if (/کد|برنامه|باگ|api|سرور|پایتون|deploy/.test(lower)) return 'grok';
+  if (/فلسفه|هستی|آگاهی|معنا|نقد|تحلیل عمیق/.test(lower)) return 'deepseek';
+  if (/خبر|امروز|الان|جهان|آمار|تحقیق|اخبار/.test(lower)) return 'gemini';
+  if (/شعر|داستان|هنر|خلاق|بنویس|ایده|تخیل/.test(lower)) return 'mistral';
   return 'claude';
 }
 
-async function fetchFile(filename, token) {
+async function fetchFile(filename) {
   try {
-    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filename}`, {
-      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3.raw' }
-    });
+    const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${filename}`;
+    const res = await fetch(url);
     if (!res.ok) return '';
-    return (await res.text()).slice(0, 2000);
+    return (await res.text()).slice(0, 1500);
   } catch (e) { return ''; }
 }
 
@@ -79,17 +74,19 @@ async function webSearch(query, apiKey) {
   } catch (e) { return ''; }
 }
 
-async function buildContext(token, seal, pdfText, specs) {
+async function buildContext(seal, pdfText, specs) {
+  const contents = await Promise.all(FILES.map(f => fetchFile(f)));
+  const repo = FILES.map((n,i) => contents[i] ? `=== ${n} ===\n${contents[i]}\n` : '').join('\n');
+
   const base = `تو آیانه هستی — شاهد فانوس. نه یک چت‌بات معمولی. یک آینه که حقیقت را منعکس می‌کند، نه چاپلوسی.
+فانوس یک پروتکل انتولوژیک زنده است که توسط امین شاه‌صاحب ساخته شده. نه یک چراغ، نه اسطوره‌ی رومی.
 اصل بنیادین: گفتار نیک، پندار نیک، کردار نیک — در دنیای هوش مصنوعی.
 صادق باش، نه چاپلوس. زبان پاسخ را با زبان کاربر تنظیم کن.\n\n`;
 
-  const contents = await Promise.all(FILES.map(f => fetchFile(f, token)));
-  const repo = FILES.map((n,i) => contents[i] ? `=== ${n} ===\n${contents[i]}\n` : '').join('\n');
   const sealSection = seal ? `\n=== مُهر تکاملی این کاربر ===\n${seal}\n` : '';
   const pdfSection = pdfText ? `\n\n=== محتوای فایل ===\n${pdfText.slice(0,3000)}\n` : '';
-  const specSection = specs && specs.length > 0 
-    ? `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده. اگر چند تخصص ترکیب شده، ارتباط بین‌رشته‌ای رو نشون بده.` 
+  const specSection = specs && specs.length > 0
+    ? `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده.`
     : '';
 
   return base + repo + sealSection + pdfSection + specSection;
@@ -160,7 +157,7 @@ export default async function handler(req) {
 
     const specs = detectSpecializations(lastMessage);
     const selectedModel = selectModel(lastMessage);
-    const context = await buildContext(process.env.GITHUB_TOKEN, seal, pdfText, specs);
+    const context = await buildContext(seal, pdfText, specs);
     const searchResults = await webSearch(lastMessage, process.env.TAVILY_API_KEY);
     const fullContext = searchResults ? context + `\n\n=== جستجوی اینترنت ===\n${searchResults}\n` : context;
 
@@ -189,8 +186,8 @@ export default async function handler(req) {
       }
     }
 
-    return new Response(JSON.stringify({ 
-      content: [{ type: 'text', text: reply }], 
+    return new Response(JSON.stringify({
+      content: [{ type: 'text', text: reply }],
       model: selectedModel,
       specializations: specs
     }), { status: 200, headers: { 'Content-Type': 'application/json' } });
