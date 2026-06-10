@@ -301,7 +301,6 @@ async function openSealModal() {
       sealText = data.content[0].text;
       document.getElementById("sealPreview").textContent = sealText;
 
-      // ذخیره روی سرور و گرفتن کد
       var saveRes = await fetch("/api/seal",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
