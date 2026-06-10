@@ -29,7 +29,6 @@ export default async function handler(req) {
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (req.method === 'POST') {
-    // ذخیره مُهر
     const body = await req.json();
     const { seal } = body;
     if (!seal) return new Response(JSON.stringify({ error: 'no seal' }), { status: 400 });
@@ -43,7 +42,6 @@ export default async function handler(req) {
   }
 
   if (req.method === 'GET') {
-    // بازیابی مُهر
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code');
     if (!code) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
