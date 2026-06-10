@@ -153,7 +153,28 @@ var isLoading = false;
 var sealText = "";
 var sealCode = "";
 var loadedSeal = "";
+var loadedSpecialization = "";
 var quickRepliesData = ["فانوس چیه؟","چطور استفاده کنم؟","نوآیین یعنی چی؟","چرا ساخته شد؟"];
+
+function detectSpecializationFromText(text) {
+  if (!text) return "عمومی";
+  const lower = text.toLowerCase();
+  const kw = {
+    علوم: ['quantum','الگوریتم','دی‌ان‌ای','قضیه','کد','ژن','مولکول','فیزیک','شیمی','زیست','ریاضی','کامپیوتر'],
+    فلسفه: ['هستی','بودن','آگاهی','تائو','ذن','اگزیستانس','پدیدارشناسی','وجود','معنا','شناخت'],
+    هنر: ['ریتم','تصویر','روایت','لحن','شعر','موسیقی','نقاشی','رنگ','قلم','آهنگ'],
+    مهندسی: ['سیستم','طراحی','مدار','ساختار','الگوریتم','معماری','پردازنده','سرور','پایتون','کد'],
+    پزشکی: ['تشخیص','درمان','نشانه','سلول','بیماری','دارو','جراحی','قلب','مغز','ویروس'],
+    حقوق: ['قانون','قرارداد','حق','تعهد','شکایت','دادگاه','کیفر','مجازات','حقوق','قضایی'],
+    تاریخ: ['سلسله','امپراتوری','باستان','نسخه','پیدایش','تمدن','هخامنشی','ساسانی','قاجار','پهلوی']
+  };
+  for (const [branch, words] of Object.entries(kw)) {
+    for (const w of words) {
+      if (lower.includes(w)) return branch;
+    }
+  }
+  return "عمومی";
+}
 
 function init() {
   var inp = document.getElementById("msgInput");
@@ -187,6 +208,7 @@ async function loadSealByCode() {
     var res = await fetch("/api/seal?code=" + code);
     var data = await res.json();
     if (data.seal) {
+      loadedSpecialization = data.specialization || "عمومی";
       activateSeal(data.seal);
     } else {
       alert("کد پیدا نشد. دوباره چک کن.");
@@ -200,7 +222,16 @@ function handleFileUpload(event) {
   var file = event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
-  reader.onload = function(e) { activateSeal(e.target.result); };
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      loadedSpecialization = data.specialization || "عمومی";
+      activateSeal(data.seal);
+    } catch {
+      loadedSpecialization = "عمومی";
+      activateSeal(e.target.result);
+    }
+  };
   reader.readAsText(file);
 }
 
@@ -264,8 +295,11 @@ function sendMessage() {
   isLoading = true;
   document.getElementById("sendBtn").disabled = true;
   addTyping();
-  var payload = {messages:messages};
+
+  var specialization = loadedSpecialization || detectSpecializationFromText(text);
+  var payload = { messages: messages, specialization: specialization };
   if (loadedSeal) payload.seal = loadedSeal;
+
   fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
   .then(function(r){return r.json();})
   .then(function(data){
@@ -274,6 +308,9 @@ function sendMessage() {
       var reply = data.content[0].text;
       messages.push({role:"assistant",content:reply});
       addMessage("ai",reply);
+      if (data.specialization && !loadedSpecialization) {
+        loadedSpecialization = data.specialization;
+      }
       if (messages.length>=4) document.getElementById("saveSealBtn").classList.add("visible");
     } else {
       document.getElementById("errorMsg").style.display="block";
@@ -294,17 +331,18 @@ async function openSealModal() {
     var res = await fetch("/api/chat",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({messages:messages.concat([{role:"user",content:prompt}])})
+      body:JSON.stringify({messages:messages.concat([{role:"user",content:prompt}]), specialization: loadedSpecialization })
     });
     var data = await res.json();
     if (data.content && data.content[0]) {
       sealText = data.content[0].text;
       document.getElementById("sealPreview").textContent = sealText;
 
+      var finalSpecialization = loadedSpecialization || "عمومی";
       var saveRes = await fetch("/api/seal",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({seal:sealText})
+        body:JSON.stringify({seal:sealText, specialization: finalSpecialization})
       });
       var saveData = await saveRes.json();
       if (saveData.code) {
@@ -328,11 +366,11 @@ function copyCode() {
 }
 
 function downloadSeal() {
-  var content = sealCode + "\n\n" + sealText;
-  var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
+  var sealObj = { seal: sealText, specialization: loadedSpecialization || "عمومی", code: sealCode, timestamp: new Date().toISOString() };
+  var blob = new Blob([JSON.stringify(sealObj, null, 2)],{type:"application/json"});
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
-  a.href=url; a.download="fanus-seal.txt"; a.click();
+  a.href=url; a.download="fanus-seal.json"; a.click();
   URL.revokeObjectURL(url);
 }
 
