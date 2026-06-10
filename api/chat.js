@@ -98,7 +98,6 @@ export default async function handler(req) {
 
     let context = await buildContext(process.env.GITHUB_TOKEN, seal);
 
-    // فانوس خودش تشخیص می‌ده کِی search کنه
     const shouldSearch = await needsSearch(lastMessage, process.env.ANTHROPIC_API_KEY);
 
     if (shouldSearch && process.env.TAVILY_API_KEY) {
