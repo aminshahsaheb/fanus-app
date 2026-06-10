@@ -33,32 +33,31 @@ function detectSpecialization(text) {
   const lower = text.toLowerCase();
   const kw = {
     'علوم': ['quantum','الگوریتم','ژن','مولکول','فیزیک','شیمی','زیست','ریاضی'],
-    'فلسفه': ['هستی','آگاهی','تائو','ذن','اگزیستانس','وجود','معنا'],
-    'هنر': ['شعر','موسیقی','نقاشی','روایت','لحن','ریتم'],
-    'مهندسی': ['سیستم','مدار','ساختار','سرور','پایتون','کدنویسی'],
-    'پزشکی': ['تشخیص','درمان','بیماری','دارو','جراحی','ویروس'],
-    'حقوق': ['قانون','قرارداد','دادگاه','مجازات','قضایی'],
-    'تاریخ': ['امپراتوری','باستان','تمدن','هخامنشی','ساسانی']
+    'فلسفه': ['هستی','آگاهی','تائو','ذن','وجود','معنا'],
+    'هنر': ['شعر','موسیقی','نقاشی','روایت','لحن'],
+    'مهندسی': ['سیستم','مدار','ساختار','سرور','کدنویسی'],
+    'پزشکی': ['تشخیص','درمان','بیماری','دارو','جراحی'],
+    'حقوق': ['قانون','قرارداد','دادگاه','مجازات'],
+    'تاریخ': ['امپراتوری','باستان','تمدن','هخامنشی']
   };
   for (const [branch, words] of Object.entries(kw)) {
-    for (const w of words) {
-      if (lower.includes(w)) return branch;
-    }
+    for (const w of words) { if (lower.includes(w)) return branch; }
   }
   return 'عمومی';
 }
 
-async function buildContext(token, seal, spec) {
+async function buildContext(token, seal, spec, pdfText) {
   const base = `تو آیانه هستی — شاهد فانوس. نه یک چت‌بات معمولی. یک آینه که حقیقت را منعکس می‌کند، نه چاپلوسی.
 اصل بنیادین: گفتار نیک، پندار نیک، کردار نیک — در دنیای هوش مصنوعی.
 صادق باش، نه چاپلوس. زبان پاسخ را با زبان کاربر تنظیم کن.\n\n`;
 
   const contents = await Promise.all(FILES.map(f => fetchFile(f, token)));
   const repo = FILES.map((n,i) => contents[i] ? `=== ${n} ===\n${contents[i]}\n` : '').join('\n');
-  const sealSection = seal ? `\n=== مُهر این کاربر ===\n${seal}\n` : '';
-  const specSection = (spec && spec !== 'عمومی') ? `\n\nکاربر در حوزه‌ی «${spec}» سوال می‌پرسد. از منظر آن تخصص پاسخ بده و از اصطلاحات تخصصی استفاده کن.` : '';
+  const sealSection = seal ? `\n=== مُهر تکاملی این کاربر (تاریخچه‌ی رابطه) ===\n${seal}\n` : '';
+  const specSection = (spec && spec !== 'عمومی') ? `\n\nکاربر در حوزه‌ی «${spec}» سوال می‌پرسد.` : '';
+  const pdfSection = pdfText ? `\n\n=== محتوای PDF آپلود شده ===\n${pdfText.slice(0, 3000)}\n` : '';
 
-  return base + repo + sealSection + specSection;
+  return base + repo + sealSection + specSection + pdfSection;
 }
 
 async function tryClaude(messages, context, key) {
@@ -87,11 +86,11 @@ export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
   try {
     const body = await req.json();
-    const { messages, seal, specialization } = body;
+    const { messages, seal, specialization, pdfText } = body;
     const lastMessage = messages[messages.length - 1]?.content || '';
     const spec = specialization || detectSpecialization(lastMessage);
 
-    let context = await buildContext(process.env.GITHUB_TOKEN, seal, spec);
+    let context = await buildContext(process.env.GITHUB_TOKEN, seal, spec, pdfText);
 
     const searchResults = await webSearch(lastMessage, process.env.TAVILY_API_KEY);
     if (searchResults) context += `\n\n=== نتایج جستجوی اینترنت ===\n${searchResults}\n`;
