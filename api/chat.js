@@ -198,7 +198,7 @@ export default async function handler(req) {
     if (pdfText) context += `\n\n=== محتوای فایل ===\n${pdfText.slice(0,3000)}\n`;
     if (specs.length > 0) context += `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده.`;
 
-    const searchResults = await webSearch(lastMessage, process.env.TAVILY_API_KEY);
+    const searchResults = await webSearch(lastMessage.slice(0, 2000), process.env.TAVILY_API_KEY);
     if (searchResults) context += `\n\n=== جستجوی اینترنت ===\n${searchResults}\n`;
 
     const keys = {
@@ -240,7 +240,7 @@ export default async function handler(req) {
     }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }
