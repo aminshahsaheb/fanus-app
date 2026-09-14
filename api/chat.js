@@ -154,6 +154,12 @@ export default async function handler(req) {
   try {
     const body = await req.json();
     const { messages, seal, pdfText } = body;
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
+      return new Response(JSON.stringify({ error: 'Invalid messages' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (messages.some(m => !m || !['user','assistant'].includes(m.role) || typeof m.content !== 'string')) {
+      return new Response(JSON.stringify({ error: 'Invalid message format' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
     const lastMessage = messages[messages.length - 1]?.content || '';
 
     const specs = detectSpecializations(lastMessage);
@@ -175,6 +181,11 @@ export default async function handler(req) {
       mistral: process.env.MISTRAL_API_KEY,
       groq: process.env.GROQ_API_KEY
     };
+
+    const availableKeys = Object.entries(keys).filter(([, value]) => Boolean(value)).map(([name]) => name);
+    if (availableKeys.length === 0) {
+      return new Response(JSON.stringify({ error: 'No AI provider is configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+    }
 
     let reply;
     try {
