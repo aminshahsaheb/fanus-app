@@ -99,7 +99,7 @@ export default async function handler(req) {
     if (!code || !/^FANUS-[A-HJ-NP-Z2-9]{8}$/.test(code)) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
 
     const sealData = await redisGet(code, url, token);
-    if (!sealData) return new Response(JSON.stringify({ error: 'not found' }), { status: 404 });
+    if (!sealData) return new Response(JSON.stringify({ error: 'not found' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
     try {
       const parsed = JSON.parse(sealData);
@@ -108,7 +108,7 @@ export default async function handler(req) {
       });
     } catch {
       return new Response(JSON.stringify({ seal: sealData, specialization: 'عمومی' }), {
-        status: 200, headers: { 'Content-Type': 'application/json' }
+        status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
       });
     }
   }
