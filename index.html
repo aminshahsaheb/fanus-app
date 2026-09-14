@@ -14,8 +14,8 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);background-image:linear-gradient(rgba(98,215,165,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(98,215,165,0.018) 1px,transparent 1px);background-size:40px 40px;color:var(--text);font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
   body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:720px;height:720px;background:radial-gradient(ellipse,rgba(98,215,165,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
-  .container{width:100%;max-width:640px;position:relative;z-index:1;}
-  .system-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--border);font-family:monospace;font-size:10px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}.system-bar .state{color:var(--flame);display:flex;align-items:center;gap:6px}.system-bar .state::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--flame);box-shadow:0 0 10px rgba(98,215,165,.8)}
+  .container{width:100%;max-width:700px;position:relative;z-index:1;}
+  .system-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--border);font-family:monospace;font-size:10px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}.system-bar .state{color:var(--flame);display:flex;align-items:center;gap:6px}.system-bar .state::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--flame);box-shadow:0 0 10px rgba(98,215,165,.8)}.system-bar.sealed .state{color:var(--flame-soft)}.system-bar.sealed .state::before{box-shadow:0 0 14px rgba(98,215,165,1)}
   @media(max-width:520px){body{padding:16px}.container{max-width:100%}.header{margin-bottom:24px}.header h1{font-size:23px}.header p{font-size:13px}.seal-zone{padding:14px}.seal-options{gap:8px}.seal-opt-btn{flex-basis:100%;padding:9px 12px}.modal{padding:14px}.modal-box{padding:20px}.seal-code{font-size:23px}}
 
   .header{text-align:center;margin-bottom:36px;opacity:0;animation:fadeUp 0.8s ease forwards;}
@@ -23,7 +23,7 @@
   @keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(0.95)}}
    .header h1{font-size:26px;font-weight:500;letter-spacing:0.04em;}
   .header p{margin-top:10px;font-size:14px;color:var(--text-dim);line-height:1.7;font-weight:300;}
-   .seal-zone{background:rgba(17,17,17,0.78);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:20px;opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;}
+   .seal-zone{background:linear-gradient(180deg,rgba(17,17,17,.82),rgba(10,10,10,.72));border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:20px;opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;box-shadow:0 18px 50px rgba(0,0,0,.16);}
   .seal-zone-title{font-size:13px;color:var(--flame);margin-bottom:12px;font-weight:500;}
   .seal-options{display:flex;gap:10px;flex-wrap:wrap;}
   .seal-opt-btn{background:rgba(255,255,255,.01);border:1px solid var(--border);color:var(--text-mid);padding:10px 16px;border-radius:4px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;flex:1;text-align:center;}
@@ -32,7 +32,7 @@
   .seal-input-area input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:4px;font-size:14px;font-family:'Vazirmatn',sans-serif;outline:none;direction:ltr;text-align:center;letter-spacing:2px;}
   .seal-input-area input[type=text]:focus{border-color:rgba(98,215,165,0.4);}
   .seal-input-area button{margin-top:8px;width:100%;background:var(--flame);border:none;color:#06100b;padding:10px;border-radius:4px;font-weight:500;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;}
-  .seal-loaded-badge{background:var(--flame-dim);border:1px solid rgba(98,215,165,0.25);color:var(--flame);padding:8px 16px;border-radius:3px;font-size:12px;display:none;margin-bottom:16px;text-align:center;}
+  .seal-loaded-badge{background:linear-gradient(90deg,rgba(98,215,165,.05),rgba(98,215,165,.12),rgba(98,215,165,.05));border:1px solid rgba(98,215,165,0.25);color:var(--flame);padding:9px 16px;border-radius:3px;font-size:12px;display:none;margin-bottom:16px;text-align:center;letter-spacing:.01em;}
   .toolbar{display:flex;gap:8px;margin-bottom:12px;padding-right:44px;flex-wrap:wrap;}
   .tool-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:6px 12px;border-radius:20px;font-size:12px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;display:none;}
   .tool-btn:hover{border-color:var(--flame);color:var(--flame);background:var(--flame-dim);}
@@ -83,7 +83,7 @@
   .error-msg{color:#e07070;font-size:13px;padding:8px 12px;background:rgba(224,112,112,0.08);border:1px solid rgba(224,112,112,0.2);border-radius:8px;margin-top:8px;display:none;}
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:100;align-items:center;justify-content:center;padding:24px;}
   .modal.open{display:flex;}
-  .modal-box{background:var(--surface);border:1px solid rgba(98,215,165,0.25);border-radius:6px;box-shadow:0 20px 80px rgba(0,0,0,.55);padding:28px;max-width:480px;width:100%;direction:rtl;}
+  .modal-box{background:linear-gradient(180deg,#151515,#101010);border:1px solid rgba(98,215,165,0.28);border-radius:6px;box-shadow:0 24px 100px rgba(0,0,0,.68),0 0 50px rgba(98,215,165,.05);padding:28px;max-width:500px;width:100%;direction:rtl;}
   .modal-box h3{font-size:16px;color:var(--flame);margin-bottom:8px;}
   .modal-box p{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:16px;}
   .seal-code-display{background:var(--bg);border:1px solid rgba(98,215,165,0.28);border-radius:4px;padding:20px;text-align:center;margin-bottom:16px;}
@@ -117,7 +117,7 @@
 </head>
 <body>
 <div class="container">
-  <div class="system-bar"><span>FANUS / LIVING SEAL</span><span class="state">READY</span></div>
+  <div class="system-bar" id="systemBar"><span>FANUS / LIVING SEAL</span><span class="state" id="systemState">READY</span></div>
   <div class="header">
     <div class="header-mark"><span class="flame-icon">●</span><span class="header-code">CONTINUITY / AI</span></div>
     <h1>فانوس</h1>
@@ -175,9 +175,9 @@
   </div>
 </div>
 
-<div class="modal" id="sealModal">
+<div class="modal" id="sealModal" role="dialog" aria-modal="true" aria-labelledby="sealModalTitle" aria-hidden="true">
   <div class="modal-box">
-    <h3>● مُهر گفتگوی تو</h3>
+    <h3 id="sealModalTitle">● مُهر گفتگوی تو</h3>
     <p>این کد رو نگه دار. دفعه‌ی بعد با همین کد وارد شو.</p>
     <div class="seal-code-display">
       <div class="seal-code" id="sealCodeDisplay">در حال ساخت...</div>
@@ -248,6 +248,8 @@ function activateSeal(text) {
   loadedSeal = text;
   document.getElementById("sealZone").style.display="none";
   document.getElementById("sealBadge").style.display="block";
+  document.getElementById("systemBar").classList.add("sealed");
+  document.getElementById("systemState").textContent="SEALED";
   document.getElementById("chat").innerHTML="";
   messages=[];
   addMessage("ai","مُهرت رو خوندم.\n\nخوش برگشتی. از کجا ادامه بدیم؟");
@@ -400,6 +402,7 @@ function sendWithMessages(msgs) {
 async function openSealModal() {
   document.getElementById("sealModal").classList.add("open");
   document.getElementById("sealCodeDisplay").textContent="در حال ساخت...";
+  document.getElementById("sealModal").setAttribute("aria-hidden","false");
   document.getElementById("sealPreview").textContent="";
 
   // مُهر تکاملی — بر اساس مُهر قبلی + گفتگوی جدید
@@ -428,7 +431,7 @@ async function openSealModal() {
   } catch(e) { document.getElementById("sealCodeDisplay").textContent="خطا"; }
 }
 
-function closeSealModal() { document.getElementById("sealModal").classList.remove("open"); }
+function closeSealModal() { document.getElementById("sealModal").classList.remove("open"); document.getElementById("sealModal").setAttribute("aria-hidden","true"); }
 
 function copyCode() {
   navigator.clipboard.writeText(sealCode).then(function(){
