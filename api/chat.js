@@ -155,6 +155,7 @@ async function callAPI(model, messages, context, keys) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.deepseek}` },
         body: JSON.stringify({ model: 'deepseek-chat', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
+      if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
       throw new Error('DeepSeek failed');
@@ -177,6 +178,7 @@ async function callAPI(model, messages, context, keys) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.mistral}` },
         body: JSON.stringify({ model: 'mistral-small-latest', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
+      if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
       throw new Error('Mistral failed');
@@ -187,6 +189,7 @@ async function callAPI(model, messages, context, keys) {
         headers: { 'Content-Type': 'application/json', 'x-api-key': keys.claude, 'anthropic-version': '2023-06-01' },
         body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: MAX_OUTPUT_TOKENS, system: context, messages }), signal: timeoutSignal()
       });
+      if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
       if (d.content?.[0]) return d.content[0].text;
       throw new Error('Claude failed');
@@ -225,6 +228,8 @@ export default async function handler(req) {
     if (seal) context += `\n\n=== مُهر تکاملی این کاربر ===\n${seal}\n`;
     if (pdfText) context += `\n\n=== محتوای فایل ===\n${pdfText.slice(0,3000)}\n`;
     if (specs.length > 0) context += `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده.`;
+    const approxContextTokens = Math.ceil((context.length + historyChars) / 4);
+    if (approxContextTokens > MAX_CONTEXT_TOKENS_APPROX) return new Response(JSON.stringify({ error: 'Context budget exceeded' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
 
     const searchResults = await webSearch(lastMessage.slice(0, 2000), process.env.TAVILY_API_KEY);
     if (searchResults) context += `\n\n=== جستجوی اینترنت ===\n${searchResults}\n`;
@@ -256,6 +261,7 @@ export default async function handler(req) {
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.groq}` },
           body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
         });
+        if (!res.ok) throw new Error('Provider request failed');
         const d = await res.json();
         reply = d.choices?.[0]?.message?.content || 'خطا در پردازش';
       }
