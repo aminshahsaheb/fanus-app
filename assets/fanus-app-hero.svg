@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+<title id="title">Fānus App</title><desc id="desc">A quiet interface for continuity between humans and AI.</desc>
+<rect width="1600" height="720" fill="#070908"/>
+<g fill="none" stroke="#62d7a5" stroke-opacity=".12"><path d="M96 96h1408M96 624h1408M160 128v464M1440 128v464"/><path d="M800 96v528M96 360h1408"/></g>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#e6eee9">
+<text x="128" y="164" font-size="22" letter-spacing="6">FĀNUS / APP</text>
+<text x="128" y="270" font-size="78" font-weight="700">CONTINUITY</text>
+<text x="128" y="354" font-size="78" font-weight="700">WITHOUT NOISE.</text>
+<text x="128" y="416" font-size="21" fill="#8b9891">LIVING SEAL · CONVERSATION · CONTEXT · AGENCY</text>
+<text x="128" y="558" font-size="17" fill="#62d7a5">● HUMAN / AI INTERFACE</text>
+<text x="1110" y="558" font-size="17">FANUS · LIVE</text></g>
+<g fill="none" stroke="#62d7a5" stroke-width="3"><circle cx="1210" cy="320" r="154"/><circle cx="1210" cy="320" r="92"/><circle cx="1210" cy="320" r="28"/><path d="M1056 320h308M1210 166v308"/></g>
+</svg>
