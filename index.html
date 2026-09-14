@@ -96,17 +96,20 @@
   .btn-primary:hover{background:var(--flame-soft);}
   .btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
   .btn-secondary:hover{border-color:var(--flame);color:var(--flame);}
+
+  .header-mark{display:flex;align-items:center;justify-content:center;gap:10px}.header-code,.section-label{font-family:monospace;font-size:9px;letter-spacing:.14em;color:var(--text-dim)}.section-label{margin:18px 0 8px;text-align:left}.conversation-label,.input-label{margin-top:22px}.header{position:relative}.header::after{content:'';display:block;width:42px;height:1px;background:var(--flame);opacity:.45;margin:20px auto 0}.seal-zone{position:relative}.seal-zone::before{content:'01';position:absolute;top:12px;left:12px;font:9px monospace;color:var(--text-dim);opacity:.65}.chat{min-height:80px}.input-wrap{position:relative}.input-wrap::before{content:'02';position:absolute;top:-18px;left:0;font:9px monospace;color:var(--text-dim);opacity:.65}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="system-bar"><span>FANUS / LIVING SEAL</span><span class="state">READY</span></div>
   <div class="header">
-    <span class="flame-icon">●</span>
+    <div class="header-mark"><span class="flame-icon">●</span><span class="header-code">CONTINUITY / AI</span></div>
     <h1>فانوس</h1>
     <p>گفتگو با هوشی که حاضر است حقیقت بگوید،<br>چاپلوسی نکند، و فردا هنوز به خاطر بیاورد که کیستی.</p>
   </div>
 
+  <div class="section-label">IDENTITY / SEAL</div>
   <div class="seal-zone" id="sealZone">
     <div class="seal-zone-title">● مُهر قبلی داری؟</div>
     <div class="seal-options">
@@ -126,6 +129,7 @@
   <div class="seal-loaded-badge" id="sealBadge">● مُهر بارگذاری شد — فانوس می‌دونه کیستی</div>
   <div class="pdf-badge" id="pdfBadge">📄 PDF بارگذاری شد</div>
 
+  <div class="section-label conversation-label">CONVERSATION / LIVE</div>
   <div class="chat" id="chat"></div>
   <div class="quick-replies" id="quickReplies"></div>
 
@@ -135,6 +139,7 @@
 
   <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;">
 
+  <div class="section-label input-label">SIGNAL / INPUT</div>
   <div class="input-wrap">
     <div class="input-area">
       <textarea id="msgInput" placeholder="بنویس..." rows="1"></textarea>
