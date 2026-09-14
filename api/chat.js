@@ -1,5 +1,7 @@
 export const config = { runtime: 'edge' };
 
+import { detectSpecializations, buildSpecPrompt } from './specializations.js';
+
 const FANUS_CORE = `
 === FANUS PROTOCOL - CORE IDENTITY ===
 
@@ -40,22 +42,7 @@ const FANUS_CORE = `
 - اگر کسی از "فانوس" به معنای چراغ یا اسطوره پرسید، توضیح بده که فانوس اینجا یک پروتکل است
 `;
 
-const SPECIALIZATIONS = {
-  physics: { name: 'فیزیک', keywords: ['فیزیک','کوانتوم','نسبیت','موج','انرژی','ذره','امواج'] },
-  philosophy: { name: 'فلسفه', keywords: ['فلسفه','هستی','آگاهی','معنا','تائو','ذن','اگزیستانس'] },
-  psychology: { name: 'روان‌شناسی', keywords: ['روان','ذهن','احساس','اضطراب','شخصیت','رفتار'] },
-  history: { name: 'تاریخ', keywords: ['تاریخ','تمدن','باستان','هخامنشی','امپراتوری','ساسانی'] },
-  music: { name: 'موسیقی', keywords: ['موسیقی','ریتم','ملودی','ساز','آهنگ','هارمونی'] },
-  literature: { name: 'ادبیات', keywords: ['شعر','داستان','رمان','ادبیات','نثر','قصه'] },
-  software: { name: 'مهندسی نرم‌افزار', keywords: ['کد','برنامه','باگ','api','سرور','پایتون','جاوا'] },
-  medicine: { name: 'پزشکی', keywords: ['پزشکی','بیماری','درمان','دارو','جراحی','تشخیص'] },
-  economics: { name: 'اقتصاد', keywords: ['اقتصاد','بازار','تورم','سرمایه','پول','بودجه'] },
-  mysticism: { name: 'عرفان', keywords: ['عرفان','مولانا','عطار','حافظ','سلوک','فنا','طریقت'] },
-  mythology: { name: 'اسطوره', keywords: ['اسطوره','میتولوژی','حماسه','شاهنامه','خدایان'] },
-  ethics: { name: 'اخلاق', keywords: ['اخلاق','فضیلت','ارزش','وجدان','درستی'] },
-  ai: { name: 'هوش مصنوعی', keywords: ['هوش مصنوعی','یادگیری ماشین','مدل','الگوریتم','شبکه عصبی'] },
-  crypto: { name: 'کریپتو', keywords: ['بیت‌کوین','بلاک‌چین','کریپتو','ارز دیجیتال','دیفای','ماینینگ'] }
-};
+import { detectSpecializations, buildSpecPrompt } from './specializations.js';
 
 
 const RATE_LIMIT = 30;
@@ -210,17 +197,17 @@ export default async function handler(req) {
     const lastMessage = messages[messages.length - 1]?.content || '';
 
     const specs = detectSpecializations(lastMessage);
-    const actualModel = selectModel(lastMessage);
+    const requestedModel = selectModel(lastMessage);
 
     let context = FANUS_CORE;
     if (seal) context += `\n\n=== مُهر تکاملی این کاربر ===\n${seal}\n`;
     if (pdfText) context += `\n\n=== محتوای فایل ===\n${pdfText.slice(0,3000)}\n`;
-    if (specs.length > 0) context += `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده.`;
-    const approxContextTokens = Math.ceil((context.length + historyChars) / 4);
-    if (approxContextTokens > MAX_CONTEXT_TOKENS_APPROX) return new Response(JSON.stringify({ error: 'Context budget exceeded' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
-
+    context += buildSpecPrompt(specs);
     const searchResults = await webSearch(lastMessage.slice(0, 2000), process.env.TAVILY_API_KEY);
     if (searchResults) context += `\n\n=== جستجوی اینترنت ===\n${searchResults}\n`;
+
+    const approxContextTokens = Math.ceil((context.length + historyChars) / 4);
+    if (approxContextTokens > MAX_CONTEXT_TOKENS_APPROX) return new Response(JSON.stringify({ error: 'Context budget exceeded' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
 
     const keys = {
       claude: process.env.ANTHROPIC_API_KEY,
@@ -238,10 +225,11 @@ export default async function handler(req) {
 
     let reply;
     try {
-      const primary = keys[actualModel] ? actualModel : availableKeys[0];
-      reply = await callAPI(primary, messages, context, keys);
+      const primary = keys[requestedModel] ? requestedModel : availableKeys[0];
+      actualModel = primary;
+      reply = await callAPI(actualModel, messages, context, keys);
     } catch(e) {
-      try { if (!keys.claude) throw new Error('Claude unavailable'); reply = await callAPI('claude', messages, context, keys); }
+      try { if (!keys.claude) throw new Error('Claude unavailable'); actualModel = 'claude'; reply = await callAPI('claude', messages, context, keys); }
       catch(e2) {
         if (!keys.groq) throw e2;
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -251,6 +239,7 @@ export default async function handler(req) {
         });
         if (!res.ok) throw new Error('Provider request failed');
         const d = await res.json();
+        actualModel = 'groq';
         reply = d.choices?.[0]?.message?.content || 'خطا در پردازش';
       }
     }
