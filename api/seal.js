@@ -23,6 +23,14 @@ async function checkRateLimit(req) {
   return count <= RATE_LIMIT;
 }
 
+
+function constantTimeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const bytes = new Uint8Array(4);
@@ -65,9 +73,14 @@ export default async function handler(req) {
     if (typeof seal !== 'string' || !seal.trim()) return new Response(JSON.stringify({ error: 'no seal' }), { status: 400 });
     if (seal.length > MAX_SEAL_CHARS) return new Response(JSON.stringify({ error: 'Seal too large' }), { status: 413 });
 
-    const code = generateCode();
-    const sealData = JSON.stringify({ seal, specialization: specialization || 'عمومی', createdAt: new Date().toISOString() });
-    const saved = await redisSet(code, sealData, url, token);
+    let code, saved = false;
+    for (let attempt = 0; attempt < 5 && !saved; attempt++) {
+      code = generateCode();
+      const existing = await redisGet(code, url, token);
+      if (existing) continue;
+      const sealData = JSON.stringify({ seal, specialization: specialization || 'عمومی', createdAt: new Date().toISOString() });
+      saved = await redisSet(code, sealData, url, token);
+    }
     if (!saved) return new Response(JSON.stringify({ error: 'failed to store seal' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
 
     return new Response(JSON.stringify({ code }), {
