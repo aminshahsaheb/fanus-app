@@ -16,20 +16,20 @@
   body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:720px;height:720px;background:radial-gradient(ellipse,rgba(98,215,165,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
   .container{width:100%;max-width:640px;position:relative;z-index:1;}
   .header{text-align:center;margin-bottom:36px;opacity:0;animation:fadeUp 0.8s ease forwards;}
-   .flame-icon{font-size:18px;display:block;margin-bottom:16px;color:var(--flame);animation:flicker 3s ease-in-out infinite;}
+   .flame-icon{font-size:10px;display:block;margin-bottom:16px;color:var(--flame);text-shadow:0 0 18px rgba(98,215,165,.7);animation:flicker 3s ease-in-out infinite;}
   @keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(0.95)}}
    .header h1{font-size:26px;font-weight:500;letter-spacing:0.04em;}
   .header p{margin-top:10px;font-size:14px;color:var(--text-dim);line-height:1.7;font-weight:300;}
    .seal-zone{background:rgba(17,17,17,0.78);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:20px;opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;}
   .seal-zone-title{font-size:13px;color:var(--flame);margin-bottom:12px;font-weight:500;}
   .seal-options{display:flex;gap:10px;flex-wrap:wrap;}
-  .seal-opt-btn{background:transparent;border:1px solid var(--border);color:var(--text-mid);padding:10px 16px;border-radius:8px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;flex:1;text-align:center;}
+  .seal-opt-btn{background:rgba(255,255,255,.01);border:1px solid var(--border);color:var(--text-mid);padding:10px 16px;border-radius:4px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;flex:1;text-align:center;}
   .seal-opt-btn:hover{border-color:var(--flame);color:var(--flame);background:var(--flame-dim);}
   .seal-input-area{margin-top:12px;display:none;}
-  .seal-input-area input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;font-family:'Vazirmatn',sans-serif;outline:none;direction:ltr;text-align:center;letter-spacing:2px;}
+  .seal-input-area input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:4px;font-size:14px;font-family:'Vazirmatn',sans-serif;outline:none;direction:ltr;text-align:center;letter-spacing:2px;}
   .seal-input-area input[type=text]:focus{border-color:rgba(98,215,165,0.4);}
-  .seal-input-area button{margin-top:8px;width:100%;background:var(--flame);border:none;color:white;padding:10px;border-radius:8px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;}
-  .seal-loaded-badge{background:var(--flame-dim);border:1px solid rgba(98,215,165,0.25);color:var(--flame);padding:8px 16px;border-radius:20px;font-size:12px;display:none;margin-bottom:16px;text-align:center;}
+  .seal-input-area button{margin-top:8px;width:100%;background:var(--flame);border:none;color:#06100b;padding:10px;border-radius:4px;font-weight:500;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;}
+  .seal-loaded-badge{background:var(--flame-dim);border:1px solid rgba(98,215,165,0.25);color:var(--flame);padding:8px 16px;border-radius:3px;font-size:12px;display:none;margin-bottom:16px;text-align:center;}
   .toolbar{display:flex;gap:8px;margin-bottom:12px;padding-right:44px;flex-wrap:wrap;}
   .tool-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:6px 12px;border-radius:20px;font-size:12px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;display:none;}
   .tool-btn:hover{border-color:var(--flame);color:var(--flame);background:var(--flame-dim);}
@@ -50,7 +50,7 @@
   .msg-action-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:3px 8px;border-radius:6px;font-size:11px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;}
   .msg-action-btn:hover{border-color:var(--flame);color:var(--flame);}
   .edit-area{display:none;margin-top:6px;}
-  .edit-area textarea{width:100%;background:var(--bg);border:1px solid rgba(200,121,58,0.4);color:var(--text);padding:10px;border-radius:8px;font-size:13px;font-family:'Vazirmatn',sans-serif;resize:none;outline:none;direction:rtl;}
+  .edit-area textarea{width:100%;background:var(--bg);border:1px solid rgba(98,215,165,0.4);color:var(--text);padding:10px;border-radius:8px;font-size:13px;font-family:'Vazirmatn',sans-serif;resize:none;outline:none;direction:rtl;}
   .edit-area-actions{display:flex;gap:6px;margin-top:6px;}
   .edit-area-actions button{padding:6px 12px;border-radius:6px;font-size:12px;font-family:'Vazirmatn',sans-serif;cursor:pointer;}
   .btn-edit-save{background:var(--flame);border:none;color:white;}
@@ -60,7 +60,7 @@
   .typing span:nth-child(2){animation-delay:0.2s}.typing span:nth-child(3){animation-delay:0.4s}
   @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-6px);opacity:1}}
   .quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding-right:44px;opacity:0;animation:fadeUp 0.5s ease 0.3s forwards;}
-  .qr-btn{background:transparent;border:1px solid var(--border);color:var(--text-mid);padding:8px 14px;border-radius:20px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;}
+  .qr-btn{background:transparent;border:1px solid var(--border);color:var(--text-mid);padding:8px 14px;border-radius:4px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;transition:all 0.2s;}
   .qr-btn:hover{border-color:var(--flame);color:var(--flame-soft);background:var(--flame-dim);}
   .input-wrap{display:flex;flex-direction:column;gap:8px;}
   .input-area{display:flex;gap:10px;align-items:flex-end;opacity:0;animation:fadeUp 0.5s ease 0.5s forwards;}
@@ -70,7 +70,7 @@
   textarea{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:10px;font-size:14px;font-family:'Vazirmatn',sans-serif;resize:none;outline:none;line-height:1.6;min-height:48px;max-height:160px;direction:rtl;transition:border-color 0.2s;}
   textarea::placeholder{color:var(--text-dim);}
   textarea:focus{border-color:rgba(98,215,165,0.4);}
-  .send-btn{width:48px;height:48px;border-radius:10px;background:var(--flame);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+  .send-btn{width:48px;height:48px;border-radius:4px;background:var(--flame);border:none;box-shadow:0 0 22px rgba(98,215,165,.12);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
   .send-btn:hover{background:var(--flame-soft);transform:scale(1.05);}
   .send-btn:disabled{background:#2a2a2a;cursor:not-allowed;transform:none;}
   .send-btn svg{width:18px;height:18px;fill:white;}
@@ -80,10 +80,10 @@
   .error-msg{color:#e07070;font-size:13px;padding:8px 12px;background:rgba(224,112,112,0.08);border:1px solid rgba(224,112,112,0.2);border-radius:8px;margin-top:8px;display:none;}
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:100;align-items:center;justify-content:center;padding:24px;}
   .modal.open{display:flex;}
-  .modal-box{background:var(--surface);border:1px solid rgba(98,215,165,0.25);border-radius:16px;padding:28px;max-width:480px;width:100%;direction:rtl;}
+  .modal-box{background:var(--surface);border:1px solid rgba(98,215,165,0.25);border-radius:6px;box-shadow:0 20px 80px rgba(0,0,0,.55);padding:28px;max-width:480px;width:100%;direction:rtl;}
   .modal-box h3{font-size:16px;color:var(--flame);margin-bottom:8px;}
   .modal-box p{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:16px;}
-  .seal-code-display{background:var(--bg);border:2px solid rgba(200,121,58,0.4);border-radius:12px;padding:20px;text-align:center;margin-bottom:16px;}
+  .seal-code-display{background:var(--bg);border:1px solid rgba(98,215,165,0.28);border-radius:4px;padding:20px;text-align:center;margin-bottom:16px;}
   .seal-code{font-size:28px;font-weight:700;color:var(--flame);letter-spacing:4px;direction:ltr;}
   .seal-code-hint{font-size:12px;color:var(--text-dim);margin-top:8px;}
   .seal-preview{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text-mid);line-height:1.8;white-space:pre-wrap;margin-bottom:16px;max-height:150px;overflow-y:auto;}
@@ -98,13 +98,13 @@
 <body>
 <div class="container">
   <div class="header">
-    <span class="flame-icon">&#x1F702;</span>
+    <span class="flame-icon">●</span>
     <h1>فانوس</h1>
     <p>گفتگو با هوشی که حاضر است حقیقت بگوید،<br>چاپلوسی نکند، و فردا هنوز به خاطر بیاورد که کیستی.</p>
   </div>
 
   <div class="seal-zone" id="sealZone">
-    <div class="seal-zone-title">&#x1F702; مُهر قبلی داری؟</div>
+    <div class="seal-zone-title">● مُهر قبلی داری؟</div>
     <div class="seal-options">
       <div class="seal-opt-btn" onclick="showCodeInput()">ورود با کد مُهر</div>
       <div class="seal-opt-btn" onclick="showFileInput()">آپلود فایل مُهر</div>
@@ -119,14 +119,14 @@
     </div>
   </div>
 
-  <div class="seal-loaded-badge" id="sealBadge">&#x1F702; مُهر بارگذاری شد — فانوس می‌دونه کیستی</div>
+  <div class="seal-loaded-badge" id="sealBadge">● مُهر بارگذاری شد — فانوس می‌دونه کیستی</div>
   <div class="pdf-badge" id="pdfBadge">📄 PDF بارگذاری شد</div>
 
   <div class="chat" id="chat"></div>
   <div class="quick-replies" id="quickReplies"></div>
 
   <div class="toolbar">
-    <button class="tool-btn" id="saveSealBtn" onclick="openSealModal()">&#x1F702; ذخیره مُهر</button>
+    <button class="tool-btn" id="saveSealBtn" onclick="openSealModal()">● ذخیره مُهر</button>
   </div>
 
   <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;">
@@ -153,7 +153,7 @@
 
 <div class="modal" id="sealModal">
   <div class="modal-box">
-    <h3>&#x1F702; مُهر گفتگوی تو</h3>
+    <h3>● مُهر گفتگوی تو</h3>
     <p>این کد رو نگه دار. دفعه‌ی بعد با همین کد وارد شو.</p>
     <div class="seal-code-display">
       <div class="seal-code" id="sealCodeDisplay">در حال ساخت...</div>
@@ -266,7 +266,7 @@ function addMessage(role, text) {
   msg.dataset.index = messages.length;
 
   var av = document.createElement("div"); av.className="avatar";
-  av.textContent = role==="ai" ? "\uD83C\uDF02" : "\u25C8";
+  av.textContent = role==="ai" ? "●" : "◇";
 
   var wrap = document.createElement("div"); wrap.className="bubble-wrap";
   var b = document.createElement("div"); b.className="bubble"; b.textContent=text;
@@ -325,7 +325,7 @@ function toggleEdit(msgEl, originalText) {
 function addTyping() {
   var chat = document.getElementById("chat");
   var msg = document.createElement("div"); msg.className="msg ai"; msg.id="typing";
-  var av = document.createElement("div"); av.className="avatar"; av.textContent="\uD83C\uDF02";
+  var av = document.createElement("div"); av.className="avatar"; av.textContent="●";
   var b = document.createElement("div"); b.className="bubble typing";
   b.innerHTML="<span></span><span></span><span></span>";
   msg.appendChild(av); msg.appendChild(b); chat.appendChild(msg);
