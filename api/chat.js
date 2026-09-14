@@ -57,6 +57,29 @@ const SPECIALIZATIONS = {
   crypto: { name: 'کریپتو', keywords: ['بیت‌کوین','بلاک‌چین','کریپتو','ارز دیجیتال','دیفای','ماینینگ'] }
 };
 
+
+const RATE_LIMIT = 30;
+const RATE_WINDOW = 60;
+const MAX_BODY_BYTES = 120000;
+const MAX_MESSAGE_CHARS = 12000;
+
+function getClientKey(req) {
+  return (req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown').split(',')[0].trim().slice(0, 80);
+}
+
+async function checkRateLimit(req) {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return true;
+  const key = 'fanus:rl:chat:' + encodeURIComponent(getClientKey(req));
+  const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token } });
+  if (!res.ok) return false;
+  const data = await res.json();
+  const count = Number(data.result || 0);
+  if (count === 1) await fetch(url + '/expire/' + key + '/' + RATE_WINDOW, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+  return count <= RATE_LIMIT;
+}
+
 function detectSpecializations(text) {
   if (!text) return [];
   const lower = text.toLowerCase();
@@ -152,12 +175,17 @@ async function callAPI(model, messages, context, keys) {
 export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
   try {
+    const contentLength = Number(req.headers.get('content-length') || 0);
+    if (contentLength > MAX_BODY_BYTES) return new Response(JSON.stringify({ error: 'Request too large' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+    let allowed = true;
+    try { allowed = await checkRateLimit(req); } catch { allowed = false; }
+    if (!allowed) return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': String(RATE_WINDOW) } });
     const body = await req.json();
     const { messages, seal, pdfText } = body;
     if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
       return new Response(JSON.stringify({ error: 'Invalid messages' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
-    if (messages.some(m => !m || !['user','assistant'].includes(m.role) || typeof m.content !== 'string')) {
+    if (messages.some(m => !m || !['user','assistant'].includes(m.role) || typeof m.content !== 'string' || m.content.length > MAX_MESSAGE_CHARS)) {
       return new Response(JSON.stringify({ error: 'Invalid message format' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
     const lastMessage = messages[messages.length - 1]?.content || '';
@@ -189,10 +217,12 @@ export default async function handler(req) {
 
     let reply;
     try {
-      reply = await callAPI(selectedModel, messages, context, keys);
+      const primary = keys[selectedModel] ? selectedModel : availableKeys[0];
+      reply = await callAPI(primary, messages, context, keys);
     } catch(e) {
-      try { reply = await callAPI('claude', messages, context, keys); }
+      try { if (!keys.claude) throw new Error('Claude unavailable'); reply = await callAPI('claude', messages, context, keys); }
       catch(e2) {
+        if (!keys.groq) throw e2;
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.groq}` },
