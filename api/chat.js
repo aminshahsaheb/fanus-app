@@ -61,6 +61,8 @@ const SPECIALIZATIONS = {
 const RATE_LIMIT = 30;
 const RATE_WINDOW = 60;
 const MAX_DAILY_REQUESTS = 300;
+const MAX_CONTEXT_TOKENS_APPROX = 14000;
+const MAX_OUTPUT_TOKENS = 1000;
 const MAX_BODY_BYTES = 120000;
 const MAX_MESSAGE_CHARS = 12000;
 const MAX_HISTORY_CHARS = 60000;
@@ -140,7 +142,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.grok}` },
-        body: JSON.stringify({ model: 'grok-beta', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
+        body: JSON.stringify({ model: 'grok-beta', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
@@ -151,7 +153,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.deepseek}` },
-        body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
+        body: JSON.stringify({ model: 'deepseek-chat', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
@@ -173,7 +175,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.mistral}` },
-        body: JSON.stringify({ model: 'mistral-small-latest', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
+        body: JSON.stringify({ model: 'mistral-small-latest', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
@@ -183,7 +185,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': keys.claude, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: context, messages }), signal: timeoutSignal()
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: MAX_OUTPUT_TOKENS, system: context, messages }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.content?.[0]) return d.content[0].text;
@@ -252,7 +254,7 @@ export default async function handler(req) {
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.groq}` },
-          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
+          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: MAX_OUTPUT_TOKENS, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
         });
         const d = await res.json();
         reply = d.choices?.[0]?.message?.content || 'خطا در پردازش';
