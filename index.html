@@ -98,6 +98,12 @@
   .btn-secondary:hover{border-color:var(--flame);color:var(--flame);}
 
   .header-mark{display:flex;align-items:center;justify-content:center;gap:10px}.header-code,.section-label{font-family:monospace;font-size:9px;letter-spacing:.14em;color:var(--text-dim)}.section-label{margin:18px 0 8px;text-align:left}.conversation-label,.input-label{margin-top:22px}.header{position:relative}.header::after{content:'';display:block;width:42px;height:1px;background:var(--flame);opacity:.45;margin:20px auto 0}.seal-zone{position:relative}.seal-zone::before{content:'01';position:absolute;top:12px;left:12px;font:9px monospace;color:var(--text-dim);opacity:.65}.chat{min-height:80px}.input-wrap{position:relative}.input-wrap::before{content:'02';position:absolute;top:-18px;left:0;font:9px monospace;color:var(--text-dim);opacity:.65}
+
+  /* Fanus system refinement */
+  .bubble{border-radius:4px!important;border:1px solid var(--border);background:rgba(17,17,17,.72)!important}.msg.user .bubble{background:rgba(98,215,165,.055)!important;border-color:rgba(98,215,165,.16)}
+  .avatar{border-radius:4px!important}.input-tool-btn,.edit-area textarea,.edit-area-actions button,.tool-btn{border-radius:4px!important}.pdf-badge{border-radius:3px!important}
+  button:focus-visible,textarea:focus-visible,input:focus-visible{outline:1px solid rgba(98,215,165,.55);outline-offset:2px}
+  @media(max-width:520px){.system-bar{margin-bottom:18px}.section-label{margin-top:16px}.chat{gap:12px}.msg{gap:8px}.bubble-wrap{max-width:calc(100% - 40px)}.bubble{padding:10px 12px}.toolbar,.quick-replies{padding-right:0}.input-tools{flex-wrap:wrap}.input-tool-btn{flex:1}.send-btn{width:46px;height:46px}.avatar{width:28px;height:28px}}
 </style>
 </head>
 <body>
