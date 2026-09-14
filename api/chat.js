@@ -127,6 +127,7 @@ async function webSearch(query, apiKey) {
       body: JSON.stringify({ api_key: apiKey, query, max_results: 3, search_depth: 'basic' }),
       signal: timeoutSignal()
     });
+    if (!res.ok) return '';
     const data = await res.json();
     if (data.results) return data.results.map(r => `${r.title}\n${r.content}`).join('\n\n');
     return '';
@@ -141,6 +142,7 @@ async function callAPI(model, messages, context, keys) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.grok}` },
         body: JSON.stringify({ model: 'grok-beta', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
+      if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
       throw new Error('Grok failed');
@@ -162,6 +164,7 @@ async function callAPI(model, messages, context, keys) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }), signal: timeoutSignal()
       });
+      if (!res.ok) throw new Error('Provider request failed');
       const d = await res.json();
       if (d.candidates?.[0]?.content?.parts?.[0]?.text) return d.candidates[0].content.parts[0].text;
       throw new Error('Gemini failed');
