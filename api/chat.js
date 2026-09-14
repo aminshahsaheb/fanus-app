@@ -186,6 +186,8 @@ export default async function handler(req) {
     if (!allowed) return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': String(RATE_WINDOW) } });
     const body = await req.json();
     const { messages, seal, pdfText } = body;
+    if (seal !== undefined && (typeof seal !== 'string' || seal.length > 40000)) return new Response(JSON.stringify({ error: 'Seal context too large' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+    if (pdfText !== undefined && (typeof pdfText !== 'string' || pdfText.length > 10000)) return new Response(JSON.stringify({ error: 'PDF context too large' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
     if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
       return new Response(JSON.stringify({ error: 'Invalid messages' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
@@ -230,7 +232,7 @@ export default async function handler(req) {
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.groq}` },
-          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1000, messages: [{role:'system',content:context},...messages] })
+          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
         });
         const d = await res.json();
         reply = d.choices?.[0]?.message?.content || 'خطا در پردازش';
