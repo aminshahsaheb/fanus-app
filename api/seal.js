@@ -30,6 +30,9 @@ function generateCode() {
   crypto.getRandomValues(bytes);
   let code = 'FANUS-';
   for (const byte of bytes) code += chars[byte % chars.length];
+  const extra = new Uint8Array(4);
+  crypto.getRandomValues(extra);
+  for (const byte of extra) code += chars[byte % chars.length];
   return code;
 }
 
@@ -79,14 +82,14 @@ export default async function handler(req) {
     if (!saved) return new Response(JSON.stringify({ error: 'failed to store seal' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
 
     return new Response(JSON.stringify({ code }), {
-      status: 200, headers: { 'Content-Type': 'application/json' }
+      status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
   if (req.method === 'GET') {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code')?.trim().toUpperCase();
-    if (!code || !/^FANUS-[A-HJ-NP-Z2-9]{4}$/.test(code)) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
+    if (!code || !/^FANUS-[A-HJ-NP-Z2-9]{8}$/.test(code)) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
 
     const sealData = await redisGet(code, url, token);
     if (!sealData) return new Response(JSON.stringify({ error: 'not found' }), { status: 404 });
@@ -94,7 +97,7 @@ export default async function handler(req) {
     try {
       const parsed = JSON.parse(sealData);
       return new Response(JSON.stringify({ seal: parsed.seal, specialization: parsed.specialization }), {
-        status: 200, headers: { 'Content-Type': 'application/json' }
+        status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
       });
     } catch {
       return new Response(JSON.stringify({ seal: sealData, specialization: 'عمومی' }), {
