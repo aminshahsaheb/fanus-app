@@ -62,6 +62,7 @@ const RATE_LIMIT = 30;
 const RATE_WINDOW = 60;
 const MAX_BODY_BYTES = 120000;
 const MAX_MESSAGE_CHARS = 12000;
+const MAX_HISTORY_CHARS = 60000;
 
 function getClientKey(req) {
   return (req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown').split(',')[0].trim().slice(0, 80);
@@ -193,6 +194,10 @@ export default async function handler(req) {
     }
     if (messages.some(m => !m || !['user','assistant'].includes(m.role) || typeof m.content !== 'string' || m.content.length > MAX_MESSAGE_CHARS)) {
       return new Response(JSON.stringify({ error: 'Invalid message format' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    const historyChars = messages.reduce((sum, m) => sum + m.content.length, 0);
+    if (historyChars > MAX_HISTORY_CHARS) {
+      return new Response(JSON.stringify({ error: 'Conversation too large' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
     }
     const lastMessage = messages[messages.length - 1]?.content || '';
 
