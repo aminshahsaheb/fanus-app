@@ -7,19 +7,26 @@ const RATE_LIMIT = 20;
 const RATE_WINDOW = 60;
 
 function getClientKey(req) {
-  return (req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown').split(',')[0].trim().slice(0, 80);
+  const forwarded = req.headers.get('x-forwarded-for');
+  const real = req.headers.get('x-real-ip');
+  const candidate = forwarded ? forwarded.split(',')[0].trim() : real || 'unknown';
+  return candidate.slice(0, 80);
 }
 
+const RATE_TIMEOUT_MS = 2500;
 async function checkRateLimit(req) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return true;
   const key = 'fanus:rl:seal:' + encodeURIComponent(getClientKey(req));
-  const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token } });
+  const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token }, signal: controller.signal });
   if (!res.ok) return false;
   const data = await res.json();
   const count = Number(data.result || 0);
-  if (count === 1) await fetch(url + '/expire/' + key + '/' + RATE_WINDOW, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+  if (count === 1) await fetch(url + '/expire/' + key + '/' + RATE_WINDOW, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, signal: controller.signal });
+  clearTimeout(timer);
   return count <= RATE_LIMIT;
 }
 
