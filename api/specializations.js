@@ -50,3 +50,6 @@ export function buildSpecPrompt(specs) {
   if (!specs || specs.length === 0 || specs[0] === 'عمومی') return '';
   return `\n\nتخصص‌های فعال: ${specs.join('، ')}\nاز منظر این تخصص‌ها پاسخ بده. اصطلاحات تخصصی استفاده کن. اگر چند تخصص با هم ترکیب شده، ارتباط بین‌رشته‌ای رو نشون بده.`;
 }
+
+
+module.exports = { SPECIALIZATIONS, detectSpecializations };
