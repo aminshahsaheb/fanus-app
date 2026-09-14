@@ -95,18 +95,6 @@ async function checkRateLimit(req) {
   return count <= RATE_LIMIT;
 }
 
-function detectSpecializations(text) {
-  if (!text) return [];
-  const lower = text.toLowerCase();
-  const detected = [];
-  for (const [key, spec] of Object.entries(SPECIALIZATIONS)) {
-    for (const kw of spec.keywords) {
-      if (lower.includes(kw)) { detected.push(spec.name); break; }
-    }
-  }
-  return detected.slice(0, 3);
-}
-
 function selectModel(text) {
   if (!text) return 'claude';
   const lower = text.toLowerCase();
@@ -222,7 +210,7 @@ export default async function handler(req) {
     const lastMessage = messages[messages.length - 1]?.content || '';
 
     const specs = detectSpecializations(lastMessage);
-    const selectedModel = selectModel(lastMessage);
+    const actualModel = selectModel(lastMessage);
 
     let context = FANUS_CORE;
     if (seal) context += `\n\n=== مُهر تکاملی این کاربر ===\n${seal}\n`;
@@ -250,7 +238,7 @@ export default async function handler(req) {
 
     let reply;
     try {
-      const primary = keys[selectedModel] ? selectedModel : availableKeys[0];
+      const primary = keys[actualModel] ? actualModel : availableKeys[0];
       reply = await callAPI(primary, messages, context, keys);
     } catch(e) {
       try { if (!keys.claude) throw new Error('Claude unavailable'); reply = await callAPI('claude', messages, context, keys); }
@@ -269,7 +257,7 @@ export default async function handler(req) {
 
     return new Response(JSON.stringify({
       content: [{ type: 'text', text: reply }],
-      model: selectedModel,
+      model: actualModel,
       specializations: specs
     }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
