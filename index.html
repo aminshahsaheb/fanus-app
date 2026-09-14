@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فانوس</title>
+<meta name="theme-color" content="#070908">
+<meta name="description" content="فانوس — رابطی آرام برای تداوم، زمینه و گفت‌وگوی انسان و هوش مصنوعی.">
+<meta property="og:title" content="فانوس — Fānus App">
+<meta property="og:description" content="A quiet interface for continuity between humans and AI.">
+<meta property="og:type" content="website">
+<title>فانوس — Fānus App</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
   :root {
@@ -128,8 +133,8 @@
   <div class="seal-zone" id="sealZone">
     <div class="seal-zone-title">● مُهر قبلی داری؟</div>
     <div class="seal-options">
-      <div class="seal-opt-btn" onclick="showCodeInput()">ورود با کد مُهر</div>
-      <div class="seal-opt-btn" onclick="showFileInput()">آپلود فایل مُهر</div>
+      <button type="button" class="seal-opt-btn" onclick="showCodeInput()">ورود با کد مُهر</button>
+      <button type="button" class="seal-opt-btn" onclick="showFileInput()">آپلود فایل مُهر</button>
     </div>
     <div class="seal-input-area" id="codeInputArea"><div class="field-error" id="codeError"></div>
       <input type="text" id="codeInput" aria-label="کد مُهر" autocomplete="off" placeholder="FANUS-XXXX" maxlength="10" oninput="this.value=this.value.toUpperCase()">
@@ -142,7 +147,7 @@
   </div>
 
   <div class="seal-loaded-badge" id="sealBadge">● مُهر بارگذاری شد — فانوس می‌دونه کیستی</div>
-  <div class="pdf-badge" id="pdfBadge">📄 PDF بارگذاری شد</div>
+  <div class="pdf-badge" id="pdfBadge">📄 فایل متن بارگذاری شد</div>
 
   <div class="section-label conversation-label">CONVERSATION / LIVE</div>
   <div class="chat" id="chat"></div>
@@ -170,7 +175,7 @@
   <div class="error-msg" id="errorMsg">مشکلی پیش آمد. دوباره تلاش کن.</div>
 
   <div class="footer">
-    <a href="https://github.com/aminshahsaheb/Fanus-Living-Seal" target="_blank">Fanus Living Seal</a>
+    <a href="https://github.com/aminshahsaheb/Fanus-Living-Seal" target="_blank" rel="noopener noreferrer">Fanus Living Seal</a>
     &nbsp;&middot;&nbsp; ساخته شده توسط امین
   </div>
 </div>
