@@ -24,13 +24,6 @@ async function checkRateLimit(req) {
 }
 
 
-function constantTimeEqual(a, b) {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const bytes = new Uint8Array(4);
@@ -53,6 +46,7 @@ async function redisGet(key, url, token) {
   const res = await fetch(`${url}/get/${key}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
+  if (!res.ok) return null;
   const data = await res.json();
   return data.result;
 }
@@ -68,8 +62,9 @@ export default async function handler(req) {
   if (!url || !token) return new Response(JSON.stringify({ error: 'Seal storage is not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 
   if (req.method === 'POST') {
-    const body = await req.json();
-    const { seal, specialization } = body;
+    let body;
+    try { body = await req.json(); } catch { return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: { 'Content-Type': 'application/json' } }); }
+    const { seal, specialization } = body || {};
     if (typeof seal !== 'string' || !seal.trim()) return new Response(JSON.stringify({ error: 'no seal' }), { status: 400 });
     if (seal.length > MAX_SEAL_CHARS) return new Response(JSON.stringify({ error: 'Seal too large' }), { status: 413 });
 
