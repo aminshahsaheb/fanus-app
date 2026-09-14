@@ -23,7 +23,6 @@ async function checkRateLimit(req) {
   const key = 'fanus:rl:seal:' + encodeURIComponent(getClientKey(req));
   const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token }, signal: controller.signal });
   if (!res.ok) { clearTimeout(timer); return false; }
-  if (!res.ok) return false;
   const data = await res.json();
   const count = Number(data.result || 0);
   if (count === 1) await fetch(url + '/expire/' + key + '/' + RATE_WINDOW, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, signal: controller.signal });
