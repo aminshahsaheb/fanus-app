@@ -15,13 +15,14 @@ function getClientKey(req) {
 
 const RATE_TIMEOUT_MS = 2500;
 async function checkRateLimit(req) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return true;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), RATE_TIMEOUT_MS);
   const key = 'fanus:rl:seal:' + encodeURIComponent(getClientKey(req));
   const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token }, signal: controller.signal });
+  if (!res.ok) { clearTimeout(timer); return false; }
   if (!res.ok) return false;
   const data = await res.json();
   const count = Number(data.result || 0);
@@ -44,21 +45,29 @@ function generateCode() {
 }
 
 async function redisSet(key, value, url, token) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  try {
   const res = await fetch(`${url}/set/${key}/ex/31536000`, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(value)
   });
   return res.ok;
+  } finally { clearTimeout(timer); }
 }
 
 async function redisGet(key, url, token) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  try {
   const res = await fetch(`${url}/get/${key}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) return null;
   const data = await res.json();
   return data.result;
+  } finally { clearTimeout(timer); }
 }
 
 export default async function handler(req) {
