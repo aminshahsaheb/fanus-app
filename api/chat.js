@@ -198,6 +198,7 @@ export default async function handler(req) {
 
     const specs = detectSpecializations(lastMessage);
     const requestedModel = selectModel(lastMessage);
+    let actualModel = requestedModel;
 
     let context = FANUS_CORE;
     if (seal) context += `\n\n=== مُهر تکاملی این کاربر ===\n${seal}\n`;
