@@ -102,13 +102,17 @@ function selectModel(text) {
   return 'claude';
 }
 
+const EXTERNAL_TIMEOUT_MS = 15000;
+function timeoutSignal(ms = EXTERNAL_TIMEOUT_MS) { return AbortSignal.timeout(ms); }
+
 async function webSearch(query, apiKey) {
   if (!apiKey) return '';
   try {
     const res = await fetch('https://api.tavily.com/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: apiKey, query, max_results: 3, search_depth: 'basic' })
+      body: JSON.stringify({ api_key: apiKey, query, max_results: 3, search_depth: 'basic' }),
+      signal: timeoutSignal()
     });
     const data = await res.json();
     if (data.results) return data.results.map(r => `${r.title}\n${r.content}`).join('\n\n');
@@ -122,7 +126,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.grok}` },
-        body: JSON.stringify({ model: 'grok-beta', max_tokens: 1000, messages: [{role:'system',content:context},...messages] })
+        body: JSON.stringify({ model: 'grok-beta', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
@@ -132,7 +136,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.deepseek}` },
-        body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 1000, messages: [{role:'system',content:context},...messages] })
+        body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
@@ -143,7 +147,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${keys.gemini}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.candidates?.[0]?.content?.parts?.[0]?.text) return d.candidates[0].content.parts[0].text;
@@ -153,7 +157,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${keys.mistral}` },
-        body: JSON.stringify({ model: 'mistral-small-latest', max_tokens: 1000, messages: [{role:'system',content:context},...messages] })
+        body: JSON.stringify({ model: 'mistral-small-latest', max_tokens: 1000, messages: [{role:'system',content:context},...messages] }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.choices?.[0]) return d.choices[0].message.content;
@@ -163,7 +167,7 @@ async function callAPI(model, messages, context, keys) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': keys.claude, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: context, messages })
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: context, messages }), signal: timeoutSignal()
       });
       const d = await res.json();
       if (d.content?.[0]) return d.content[0].text;
