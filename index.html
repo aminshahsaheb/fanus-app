@@ -80,9 +80,9 @@
   .footer{text-align:center;margin-top:20px;font-size:12px;color:var(--text-dim);opacity:0;animation:fadeUp 0.5s ease 0.8s forwards;}
   .footer a{color:var(--gold);text-decoration:none;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .error-msg{color:#e07070;font-size:13px;padding:8px 12px;background:rgba(224,112,112,0.08);border:1px solid rgba(224,112,112,0.2);border-radius:8px;margin-top:8px;display:none;}
+  .error-msg{color:#e07070;font-size:13px;padding:10px 12px;background:rgba(224,112,112,0.08);border:1px solid rgba(224,112,112,0.2);border-radius:8px;margin-top:8px;display:none;}
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:100;align-items:center;justify-content:center;padding:24px;}
-  .modal.open{display:flex;}
+  .modal.open{display:flex;animation:modalIn .18s ease forwards}.modal-box{animation:modalBoxIn .22s ease forwards}@keyframes modalIn{from{opacity:0}to{opacity:1}}@keyframes modalBoxIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
   .modal-box{background:linear-gradient(180deg,#151515,#101010);border:1px solid rgba(98,215,165,0.28);border-radius:6px;box-shadow:0 24px 100px rgba(0,0,0,.68),0 0 50px rgba(98,215,165,.05);padding:28px;max-width:500px;width:100%;direction:rtl;}
   .modal-box h3{font-size:16px;color:var(--flame);margin-bottom:8px;}
   .modal-box p{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:16px;}
@@ -112,7 +112,7 @@
   .seal-preview{border-radius:4px!important;background:rgba(255,255,255,.012)}
   .btn-primary{background:var(--flame);color:#06100b}.btn-primary:hover{background:var(--flame-soft)}.btn-secondary{border-radius:4px!important}
   .typing{background:transparent!important;border:none!important;padding-left:2px!important}.typing span{box-shadow:0 0 8px rgba(98,215,165,.35)}
-  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  .modal-close-hint{font:9px monospace;color:var(--text-dim);margin-top:10px;text-align:left;opacity:.7}.field-error{color:#e07070;font-size:11px;margin-top:6px;display:none}.seal-opt-btn:focus-visible,.qr-btn:focus-visible,.input-tool-btn:focus-visible,.tool-btn:focus-visible,.send-btn:focus-visible,.modal-actions button:focus-visible{outline:1px solid rgba(98,215,165,.7);outline-offset:2px}@media(max-width:520px){.modal{padding:12px}.modal-box{padding:18px}.modal-actions button{flex:1;min-height:42px}.seal-code{font-size:21px;letter-spacing:3px}.header p{max-width:32em;margin-left:auto;margin-right:auto}.seal-options{display:grid;grid-template-columns:1fr}.seal-opt-btn{width:100%}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
@@ -131,8 +131,8 @@
       <div class="seal-opt-btn" onclick="showCodeInput()">ورود با کد مُهر</div>
       <div class="seal-opt-btn" onclick="showFileInput()">آپلود فایل مُهر</div>
     </div>
-    <div class="seal-input-area" id="codeInputArea">
-      <input type="text" id="codeInput" placeholder="FANUS-XXXX" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+    <div class="seal-input-area" id="codeInputArea"><div class="field-error" id="codeError"></div>
+      <input type="text" id="codeInput" aria-label="کد مُهر" autocomplete="off" placeholder="FANUS-XXXX" maxlength="10" oninput="this.value=this.value.toUpperCase()">
       <button onclick="loadSealByCode()">بارگذاری مُهر</button>
     </div>
     <div class="seal-input-area" id="fileInputArea">
@@ -189,6 +189,7 @@
       <button class="btn-primary" onclick="downloadSeal()">دانلود فایل</button>
       <button class="btn-secondary" onclick="closeSealModal()">بستن</button>
     </div>
+    <div class="modal-close-hint">ESC برای بستن</div>
   </div>
 </div>
 
@@ -226,19 +227,22 @@ function showFileInput() {
 }
 
 async function loadSealByCode() {
-  var code = document.getElementById("codeInput").value.trim().toUpperCase();
-  if (!code) return;
+  var input=document.getElementById("codeInput"), err=document.getElementById("codeError");
+  var code = input.value.trim().toUpperCase();
+  err.style.display="none";
+  if (!/^FANUS-[A-Z0-9]{4}$/.test(code)) { err.textContent="کد باید به شکل FANUS-XXXX باشد."; err.style.display="block"; input.focus(); return; }
   try {
     var res = await fetch("/api/seal?code="+code);
     var data = await res.json();
     if (data.seal) { activateSeal(data.seal); }
-    else { alert("کد پیدا نشد."); }
-  } catch(e) { alert("خطا در بارگذاری."); }
+    else { err.textContent="کد پیدا نشد یا دیگر معتبر نیست."; err.style.display="block"; }
+  } catch(e) { err.textContent="بارگذاری انجام نشد. اتصال را بررسی کن."; err.style.display="block"; }
 }
 
 function handleSealFile(event) {
   var file = event.target.files[0];
   if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert("فایل مُهر نباید بیشتر از ۲ مگابایت باشد."); event.target.value=""; return; }
   var reader = new FileReader();
   reader.onload = function(e) { activateSeal(e.target.result); };
   reader.readAsText(file);
@@ -258,6 +262,7 @@ function activateSeal(text) {
 function handlePdfUpload(event) {
   var file = event.target.files[0];
   if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert("فایل نباید بیشتر از ۵ مگابایت باشد."); event.target.value=""; return; }
   var reader = new FileReader();
   reader.onload = function(e) {
     pdfText = e.target.result;
@@ -432,6 +437,8 @@ async function openSealModal() {
 }
 
 function closeSealModal() { document.getElementById("sealModal").classList.remove("open"); document.getElementById("sealModal").setAttribute("aria-hidden","true"); }
+document.getElementById("sealModal").addEventListener("click",function(e){ if(e.target===this) closeSealModal(); });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && document.getElementById("sealModal").classList.contains("open")) closeSealModal(); });
 
 function copyCode() {
   navigator.clipboard.writeText(sealCode).then(function(){
