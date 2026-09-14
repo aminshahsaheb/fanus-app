@@ -15,6 +15,9 @@
   body{background:var(--bg);background-image:linear-gradient(rgba(98,215,165,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(98,215,165,0.018) 1px,transparent 1px);background-size:40px 40px;color:var(--text);font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
   body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:720px;height:720px;background:radial-gradient(ellipse,rgba(98,215,165,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
   .container{width:100%;max-width:640px;position:relative;z-index:1;}
+  .system-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--border);font-family:monospace;font-size:10px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}.system-bar .state{color:var(--flame);display:flex;align-items:center;gap:6px}.system-bar .state::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--flame);box-shadow:0 0 10px rgba(98,215,165,.8)}
+  @media(max-width:520px){body{padding:16px}.container{max-width:100%}.header{margin-bottom:24px}.header h1{font-size:23px}.header p{font-size:13px}.seal-zone{padding:14px}.seal-options{gap:8px}.seal-opt-btn{flex-basis:100%;padding:9px 12px}.modal{padding:14px}.modal-box{padding:20px}.seal-code{font-size:23px}}
+
   .header{text-align:center;margin-bottom:36px;opacity:0;animation:fadeUp 0.8s ease forwards;}
    .flame-icon{font-size:10px;display:block;margin-bottom:16px;color:var(--flame);text-shadow:0 0 18px rgba(98,215,165,.7);animation:flicker 3s ease-in-out infinite;}
   @keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(0.95)}}
@@ -97,6 +100,7 @@
 </head>
 <body>
 <div class="container">
+  <div class="system-bar"><span>FANUS / LIVING SEAL</span><span class="state">READY</span></div>
   <div class="header">
     <span class="flame-icon">●</span>
     <h1>فانوس</h1>
