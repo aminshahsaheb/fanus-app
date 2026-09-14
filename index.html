@@ -136,7 +136,7 @@
       <button onclick="loadSealByCode()">بارگذاری مُهر</button>
     </div>
     <div class="seal-input-area" id="fileInputArea">
-      <input type="file" id="sealFileInput" accept=".txt" style="display:none" onchange="handleSealFile(event)">
+      <input type="file" aria-label="بارگذاری فایل سیل" id="sealFileInput" accept=".txt" style="display:none" onchange="handleSealFile(event)">
       <button onclick="document.getElementById('sealFileInput').click()" style="background:var(--flame);border:none;color:white;padding:10px;border-radius:8px;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;width:100%;margin-top:8px;">انتخاب فایل مُهر</button>
     </div>
   </div>
@@ -158,12 +158,12 @@
   <div class="input-wrap">
     <div class="input-area">
       <textarea id="msgInput" placeholder="بنویس..." rows="1"></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <button type="button" aria-label="ارسال پیام" class="send-btn" id="sendBtn" onclick="sendMessage()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
     <div class="input-tools">
-      <input type="file" id="pdfInput" accept=".pdf,.txt" style="display:none" onchange="handlePdfUpload(event)">
+      <input type="file" aria-label="بارگذاری فایل PDF" id="pdfInput" accept=".pdf,.txt" style="display:none" onchange="handlePdfUpload(event)">
       <button class="input-tool-btn" onclick="document.getElementById('pdfInput').click()">📄 آپلود فایل</button>
     </div>
   </div>
