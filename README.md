@@ -37,7 +37,7 @@ The application explores:
 
 The **Living Seal** is the central continuity mechanism exposed by this application.
 
-A Seal carries structured contextual information that can be loaded into a new interaction instead of forcing every conversation to begin from zero.
+A Seal carries structured contextual information that can be loaded into a new interaction instead of forcing every conversation to begin from zero. The current implementation uses a high-entropy bearer code for retrieval; possession of the code is therefore the current access mechanism, not a user account or ownership system.
 
 The current interface supports:
 
