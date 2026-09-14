@@ -2,8 +2,10 @@ export const config = { runtime: 'edge' };
 
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
   let code = 'FANUS-';
-  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  for (const byte of bytes) code += chars[byte % chars.length];
   return code;
 }
 
@@ -27,6 +29,7 @@ async function redisGet(key, url, token) {
 export default async function handler(req) {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return new Response(JSON.stringify({ error: 'Seal storage is not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 
   if (req.method === 'POST') {
     const body = await req.json();
@@ -35,7 +38,8 @@ export default async function handler(req) {
 
     const code = generateCode();
     const sealData = JSON.stringify({ seal, specialization: specialization || 'عمومی', createdAt: new Date().toISOString() });
-    await redisSet(code, sealData, url, token);
+    const saved = await redisSet(code, sealData, url, token);
+    if (!saved) return new Response(JSON.stringify({ error: 'failed to store seal' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
 
     return new Response(JSON.stringify({ code }), {
       status: 200, headers: { 'Content-Type': 'application/json' }
@@ -44,8 +48,8 @@ export default async function handler(req) {
 
   if (req.method === 'GET') {
     const { searchParams } = new URL(req.url);
-    const code = searchParams.get('code');
-    if (!code) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
+    const code = searchParams.get('code')?.trim().toUpperCase();
+    if (!code || !/^FANUS-[A-HJ-NP-Z2-9]{4}$/.test(code)) return new Response(JSON.stringify({ error: 'no code' }), { status: 400 });
 
     const sealData = await redisGet(code, url, token);
     if (!sealData) return new Response(JSON.stringify({ error: 'not found' }), { status: 404 });
