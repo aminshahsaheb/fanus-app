@@ -60,23 +60,35 @@ const SPECIALIZATIONS = {
 
 const RATE_LIMIT = 30;
 const RATE_WINDOW = 60;
+const MAX_DAILY_REQUESTS = 300;
 const MAX_BODY_BYTES = 120000;
 const MAX_MESSAGE_CHARS = 12000;
 const MAX_HISTORY_CHARS = 60000;
 
 function getClientKey(req) {
-  return (req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown').split(',')[0].trim().slice(0, 80);
+  const forwarded = req.headers.get('x-forwarded-for');
+  const real = req.headers.get('x-real-ip');
+  const candidate = forwarded ? forwarded.split(',')[0].trim() : real || 'unknown';
+  return candidate.slice(0, 80);
 }
 
 async function checkRateLimit(req) {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return true;
-  const key = 'fanus:rl:chat:' + encodeURIComponent(getClientKey(req));
+  const client = encodeURIComponent(getClientKey(req));
+  const key = 'fanus:rl:chat:' + client;
+  const dailyKey = 'fanus:rl:chat-day:' + client;
   const res = await fetch(url + '/incr/' + key, { headers: { 'Authorization': 'Bearer ' + token } });
   if (!res.ok) return false;
   const data = await res.json();
   const count = Number(data.result || 0);
+  const dailyRes = await fetch(url + '/incr/' + dailyKey, { headers: { 'Authorization': 'Bearer ' + token } });
+  if (!dailyRes.ok) return false;
+  const dailyData = await dailyRes.json();
+  const dailyCount = Number(dailyData.result || 0);
+  if (dailyCount === 1) await fetch(url + '/expire/' + dailyKey + '/86400', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+  if (dailyCount > MAX_DAILY_REQUESTS) return false;
   if (count === 1) await fetch(url + '/expire/' + key + '/' + RATE_WINDOW, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
   return count <= RATE_LIMIT;
 }
