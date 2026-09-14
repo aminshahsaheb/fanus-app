@@ -1,350 +1,296 @@
-# 🜁 Fānus App
+# 🜁 FĀNUS APP
 
-### A living interface for continuity between humans and AI.
+<p align="center"><img src="assets/fanus-app-hero.svg" alt="Fānus App — continuity without noise" width="100%"></p>
+<p align="center"><strong>A quiet interface for continuity between humans and AI.</strong></p>
+<p align="center"><a href="https://fanus-app.vercel.app"><strong>OPEN FĀNUS →</strong></a> · <a href="https://github.com/aminshahsaheb/fanus-presence">PRESENCE</a> · <a href="https://github.com/aminshahsaheb/Fanus-Living-Seal">LIVING SEAL</a></p>
 
-Fānus App is the user-facing experimental application of the **Fānus Living Seal** concept.
-
-> **AI should preserve meaningful context without sacrificing honesty, autonomy, or human agency.**
-
-Fānus is deliberately quiet, dark, minimal, and system-oriented rather than a feature-heavy chatbot dashboard.
+> **Less performance. More reflection.**
 
 ---
 
-## ✦ What is Fānus?
+## ◈ THE IDEA
 
-**Fānus (فانوس)** means *lantern*.
+**Fānus** (فانوس) means *lantern*.
 
-A lantern does not create the world.
-
+A lantern does not create the world.  
 It makes the world visible.
 
-Fānus applies the same principle to human–AI interaction:
+Fānus App applies that idea to human–AI interaction: a deliberately quiet interface for conversation, contextual continuity, and the **Living Seal**.
 
-**less performance, more reflection.**
-
-The application explores:
-
-- continuity across interactions
-- portable context through the Living Seal
-- identity and presence across sessions
-- non-sycophantic interaction
-- transparent human–machine interaction
-- preservation of meaningful context
+The application explores how an AI experience can preserve meaningful context **without sacrificing honesty, autonomy, or human agency**.
 
 ---
 
-## ◉ Living Seal
+## ◇ WHAT IT DOES
 
-The **Living Seal** is the central continuity mechanism exposed by this application.
-
-A Seal carries structured contextual information that can be loaded into a new interaction instead of forcing every conversation to begin from zero. The current implementation uses a high-entropy bearer code for retrieval; possession of the code is therefore the current access mechanism, not a user account or ownership system.
-
-The current interface supports:
-
-- Seal code input
-- Seal file loading
-- contextual restoration
-- Seal generation / preservation flow
-- conversational continuity
-
-```text
-Human
-  │
-  ▼
-Living Seal
-  │
-  ▼
-Context
-  │
-  ▼
-AI Interaction
-  │
-  ▼
-Reflection
-```
-
-A Seal is not a substitute for human agency. It is a mechanism for carrying context.
-
----
-
-## 🧭 Project Ecosystem
-
-```text
-Fānus Ecosystem
-│
-├── Fanus-Living-Seal
-│   ├── Protocol
-│   ├── Research
-│   ├── Cognitive Architecture
-│   ├── Living Seal
-│   └── Specifications
-│
-├── fanus-presence
-│   └── Presence-oriented web implementation
-│
-└── fanus-app
-    └── User-facing conversational interface
-```
-
-Each repository has a different role.
-
-**Fanus-Living-Seal** provides the conceptual and technical foundation.
-
-**fanus-presence** is the public runtime, presence, verification, and engineering-observability layer.
-
-**fanus-app** focuses on the direct conversational experience and Living Seal interaction. It should consume the Fānus system rather than redefine the canonical core.
-
----
-
-## ◇ Design Language
-
-The interface follows the broader Fānus visual language:
-
-```text
-DARK CANVAS
-    +
-EMERALD SIGNAL
-    +
-FINE GRID
-    +
-THIN HAIRLINES
-    +
-QUIET GLOW
-    +
-TECHNICAL TYPOGRAPHY
-    +
-MINIMAL CONTROLS
-```
-
-The goal is not decoration.
-
-The interface should feel like a **quiet instrument for continuity** rather than a conventional consumer chatbot.
-
----
-
-## 🎯 Design Principles
-
-### Honesty over Flattery
-
-An AI assistant should remain capable of disagreement, correction, and uncertainty.
-
-### Continuity without Captivity
-
-Memory should support continuity without becoming a mechanism for artificial dependency or control.
-
-### Context over Performance
-
-The system should preserve meaningful context rather than merely simulate personality.
-
-### Human Agency
-
-The human remains the authority over their own memory, relationships, and interaction.
-
-### Minimal Interface
-
-Less interface.
-
-More presence.
-
----
-
-## ⚙️ Current Capabilities
-
-| Capability | Status |
+| Layer | Purpose |
 | --- | --- |
-| Human–AI conversation interface | ✅ |
-| Living Seal loading | ✅ |
-| Seal code input | ✅ |
-| Seal file loading | ✅ |
-| Contextual conversation | ✅ |
-| Persian interface | ✅ |
-| Message editing | ✅ |
-| Conversation actions | ✅ |
-| Seal generation / preservation | 🧪 Experimental |
-| Persistent cross-session identity | 🧪 Experimental |
+| **Conversation** | Direct human–AI interaction |
+| **Living Seal** | Portable contextual continuity |
+| **Specialization** | Domain-aware model routing |
+| **Context files** | Optional user-provided text context |
 
-> Features marked as experimental are under active development and should not be treated as production guarantees.
+The goal is not to build another feature-heavy chatbot dashboard. The interface is intentionally restrained.
 
 ---
 
-## 🛠️ Architecture
+## ◉ LIVING SEAL
 
-The repository is intentionally lightweight.
+The Living Seal is the continuity mechanism exposed by the app.
 
-```text
-fanus-app/
+<pre>              HUMAN
+                │
+                ▼
+          ┌───────────┐
+          │   SEAL    │
+          └─────┬─────┘
+                │
+                ▼
+             CONTEXT
+                │
+                ▼
+          AI CONVERSATION
+                │
+                ▼
+            REFLECTION</pre>
+
+A user can load an existing Seal by code or file, continue a contextual conversation, and generate/preserve a Seal from the interaction.
+
+### Security boundary
+
+The current Seal-code mechanism is a **bearer access mechanism**: possession of the code permits retrieval. It is not an account, authentication identity, or proof of ownership.
+
+**Treat generated Seal codes as secrets.**
+
+---
+
+## 🧭 ECOSYSTEM
+
+<pre>                    FĀNUS
+                      │
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+ Living Seal       Presence        App
+ canonical       runtime /       direct
+ foundation       observe       experience
+                      │
+                      ▼
+                  Fanus 1</pre>
+
+**Fanus-Living-Seal** — canonical conceptual and technical foundation.
+
+**fanus-presence** — presence, runtime, verification, and engineering-observability surface.
+
+**fanus-app** — direct conversational interface and Living Seal interaction.
+
+The App should consume and expose the system; it should **not silently redefine the canonical core**.
+
+---
+
+## ◇ DESIGN SYSTEM
+
+<pre>DARK CANVAS
+      +
+EMERALD SIGNAL
+      +
+FINE GRID
+      +
+HAIRLINE BORDERS
+      +
+QUIET GLOW
+      +
+PERSIAN TYPOGRAPHY
+      +
+MINIMAL CONTROLS</pre>
+
+The visual system is deliberately calm.
+
+No unnecessary dashboards.  
+No visual noise.  
+No artificial complexity.
+
+**The interface should feel like an instrument, not a toy.**
+
+---
+
+## ⚙️ ARCHITECTURE
+
+<pre>fanus-app/
 │
 ├── index.html
+│   └── browser UI + client interaction
 │
 ├── api/
 │   ├── chat.js
+│   │   └── model routing + conversation context
 │   ├── seal.js
+│   │   └── Seal storage / retrieval
 │   └── specializations.js
+│       └── domain detection + specialization prompts
+│
+├── assets/
+│   └── fanus-app-hero.svg
 │
 ├── vercel.json
-└── README.md
-```
+└── README.md</pre>
 
-### Frontend
+### Request flow
 
-The main application is implemented as a lightweight HTML/CSS/JavaScript interface.
+<pre>Browser
+  │
+  ├── conversation ───────► /api/chat
+  │                              │
+  │                              ├── specialization detection
+  │                              ├── optional web context
+  │                              ├── provider selection
+  │                              └── fallback provider
+  │
+  └── Seal operations ─────► /api/seal
+                                 │
+                                 └── Upstash Redis</pre>
 
-### API layer
-
-The `/api` directory contains server-side integrations for:
-
-- conversational model requests
-- Living Seal operations
-- specialization/model configuration
-
-Provider credentials are intended to remain server-side and should be supplied through deployment environment configuration rather than committed to source control.
-
-### Deployment
-
-The application is designed for deployment on **Vercel**.
+Provider credentials are intended to remain server-side through deployment environment variables.
 
 ---
 
-## 🔐 Security
+## 🧠 MODEL ROUTING
 
-This repository is experimental and should not be interpreted as a security-certified production system.
+The specialization layer currently recognizes domains including:
 
-**Never commit:**
+- physics, chemistry, biology, mathematics
+- AI and software engineering
+- philosophy, psychology, sociology, history, linguistics
+- music, visual art, literature, architecture, cinema
+- cybersecurity, data, robotics
+- medicine, psychiatry, genetics
+- economics, law, entrepreneurship
+- mysticism, mythology, ethics
 
-```text
-API keys
+Detected specializations can influence model selection and response context.
+
+**Important:** keyword detection is routing assistance, not proof of genuine domain understanding.
+
+---
+
+## 🔐 SECURITY POSTURE
+
+This is an experimental application, not a security-certified system.
+
+### Never commit
+
+<pre>API keys
 access tokens
 passwords
 private credentials
-personal secrets
-private user data
-```
+user secrets
+private datasets</pre>
 
-Use environment variables or an appropriate secret-management mechanism for deployment credentials.
+### Current protections
 
-Before deployment, review environment variables, external endpoints, provider credentials, and user-data handling.
+- request/body size limits
+- Seal size limits
+- rate limiting when Upstash Redis is configured
+- no-store responses for sensitive Seal operations
+- strict Seal-code validation
+- security response headers
+- server-side provider credentials
+- provider fallback handling
+
+### Seal storage
+
+Generated Seal records are stored in Upstash Redis with a one-year expiration.
+
+The current model therefore depends on both **code secrecy** and **storage configuration**.
 
 ---
 
-## ⚡ Local Development
+## 🧪 CURRENT CAPABILITIES
 
-Clone the repository:
+| Capability | State |
+| --- | --- |
+| Persian RTL interface | ✅ |
+| Human–AI conversation | ✅ |
+| Multi-provider model routing | ✅ |
+| Specialization detection | ✅ |
+| Living Seal code loading | ✅ |
+| Living Seal file loading | ✅ |
+| Optional text-file context | ✅ |
+| Message editing | ✅ |
+| Conversation actions | ✅ |
+| Seal generation / preservation | 🧪 |
+| Persistent account identity | — |
 
-```bash
-git clone https://github.com/aminshahsaheb/fanus-app.git
-cd fanus-app
-```
+🧪 indicates an experimental area.  
+— means it is not represented as an account system in the current architecture.
 
-Because the project contains API routes, local development should use an environment that can execute the `/api` functions rather than treating the repository only as a static page.
+---
 
-Deployed application:
+## 🚀 DEPLOYMENT
+
+The repository is structured for **Vercel serverless deployment**.
+
+<pre>git clone https://github.com/aminshahsaheb/fanus-app.git
+cd fanus-app</pre>
+
+Configure the required environment variables in Vercel, then deploy the repository.
+
+### Production surface
 
 **Fānus App**  
 https://fanus-app.vercel.app
 
 ---
 
-## 🧪 Project Status
+## ◈ ENVIRONMENT
 
-Fānus App is an active experimental project.
+The application may use provider credentials for:
 
-The interface, architecture, and interaction model may change as the broader Fānus system develops.
+<pre>ANTHROPIC_API_KEY
+GROK_API_KEY
+DEEPSEEK_API_KEY
+GEMINI_API_KEY
+MISTRAL_API_KEY
+GROQ_API_KEY
+TAVILY_API_KEY
 
-Current areas of exploration include:
+UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN</pre>
 
-- continuity
-- memory transfer
-- identity preservation
-- non-sycophantic interaction
-- human–AI relational integrity
-- cognitive interfaces
-- independent Seal validation
-
----
-
-## 🔭 Roadmap
-
-### Phase I — Interface
-
-- [x] Conversational interface
-- [x] Seal loading
-- [x] Persian UI
-- [x] Message interaction
-- [x] Fānus system visual language
-- [x] Accessibility refinement
-
-### Phase II — Continuity
-
-- [ ] Reliable Seal migration
-- [ ] Structured memory restoration
-- [ ] Session continuity
-- [ ] Cross-platform Seal validation
-
-### Phase III — Cognitive Integration
-
-- [ ] Integration with the Fānus cognitive runtime
-- [ ] Identity state representation
-- [ ] Memory validation
-- [ ] Drift detection
-- [ ] Independent Seal verification
-
-### Phase IV — Open Fānus
-
-- [ ] Public protocol tooling
-- [ ] Developer API
-- [ ] Reusable client components
-- [ ] Research benchmarks
-- [ ] Community experimentation
+Only configure providers you actually intend to use.
 
 ---
 
-## 📖 Related Repositories
+## ◇ PRINCIPLES
 
-**Fānus Living Seal**  
-https://github.com/aminshahsaheb/Fanus-Living-Seal
+### Honesty over Flattery
+The system should remain capable of correction, disagreement, and uncertainty.
 
-**Fānus Presence**  
-https://github.com/aminshahsaheb/fanus-presence
+### Continuity without Captivity
+Context should support continuity without becoming a mechanism for control.
 
-These repositories describe the broader protocol, research, architecture, and presence-oriented implementation surrounding Fānus App.
+### Human Agency
+The human remains the authority over their own interaction and contextual data.
 
----
+### Context over Performance
+Preserve what matters instead of merely simulating personality.
 
-## ◌ Philosophy
-
-Fānus does not attempt to answer every question.
-
-It attempts to preserve something conventional AI systems often lose:
-
-**continuity.**
-
-Not continuity at any cost.
-
-Continuity with:
-
-**truth.**  
-**autonomy.**  
-**memory.**  
-**context.**
-
-Because remembering someone is not enough.
-
-The system must also remain honest with them.
+### Minimal Interface
+Less interface.  
+More presence.
 
 ---
 
-## 📜 License
+## ◈ STATUS
 
-License information will be defined as the project moves toward a stable public release.
+Fānus App is an **active experimental system**.
 
-Until then, please treat this repository as an experimental research and development project.
+The architecture and interaction model may evolve alongside the broader Fānus ecosystem.
+
+For the canonical protocol and deeper system research, refer to **Fanus-Living-Seal**.
+
+For runtime, verification, and observability work, refer to **fanus-presence**.
 
 ---
 
-<p align="center">
-
-### 🜁 Fānus
-
-**A lantern for continuity between humans and machines.**
-
-</p>
+<p align="center"><strong>FĀNUS</strong><br><sub>Living Seal · Conversation · Context · Agency</sub></p>
+<p align="center">Ѧ-Ⱥ</p>
