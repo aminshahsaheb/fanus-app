@@ -90,9 +90,9 @@ Each repository has a different role.
 
 **Fanus-Living-Seal** provides the conceptual and technical foundation.
 
-**fanus-presence** explores the presence-oriented web/system interface.
+**fanus-presence** is the public runtime, presence, verification, and engineering-observability layer.
 
-**fanus-app** focuses on the direct conversational experience and Living Seal interaction.
+**fanus-app** focuses on the direct conversational experience and Living Seal interaction. It should consume the Fānus system rather than redefine the canonical core.
 
 ---
 
