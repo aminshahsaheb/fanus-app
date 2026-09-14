@@ -235,7 +235,7 @@ async function loadSealByCode() {
   var input=document.getElementById("codeInput"), err=document.getElementById("codeError");
   var code = input.value.trim().toUpperCase();
   err.style.display="none";
-  if (!/^FANUS-[A-Z0-9]{4}$/.test(code)) { err.textContent="کد باید به شکل FANUS-XXXX باشد."; err.style.display="block"; input.focus(); return; }
+  if (!/^FANUS-[A-HJ-NP-Z2-9]{8}$/.test(code)) { err.textContent="کد باید به شکل FANUS-XXXXXXXX باشد."; err.style.display="block"; input.focus(); return; }
   try {
     var res = await fetch("/api/seal?code="+code);
     var data = await res.json();
