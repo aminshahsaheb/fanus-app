@@ -42,7 +42,7 @@ const FANUS_CORE = `
 - اگر کسی از "فانوس" به معنای چراغ یا اسطوره پرسید، توضیح بده که فانوس اینجا یک پروتکل است
 `;
 
-import { detectSpecializations, buildSpecPrompt } from './specializations.js';
+
 
 
 const RATE_LIMIT = 30;
