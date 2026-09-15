@@ -1,14 +1,36 @@
 # 🜁 FĀNUS APP
 
 <p align="center"><img src="assets/fanus-app-hero.svg" alt="Fānus App — continuity without noise" width="100%"></p>
-<p align="center"><strong>A quiet interface for continuity between humans and AI.</strong></p>
+<p align="center"><strong>A quiet user-facing interface for continuity between humans and AI.</strong></p>
 <p align="center"><a href="https://fanus-app.vercel.app"><strong>OPEN FĀNUS →</strong></a> · <a href="https://github.com/aminshahsaheb/fanus-presence">PRESENCE</a> · <a href="https://github.com/aminshahsaheb/Fanus-Living-Seal">LIVING SEAL</a></p>
 
 > **Less performance. More reflection.**
 
 ---
 
-## ◈ THE IDEA
+## ◈ ROLE IN THE FĀNUS SYSTEM
+
+**Fānus App is the user-facing application layer of Fānus.**
+
+It is intentionally separate from the canonical research and engineering core.
+
+```text
+Fanus-Living-Seal
+canonical core
+      │
+      ├──────────────► fanus-app
+      │                 conversation + continuity
+      │
+      └──────────────► fanus-presence
+                        presence + verification +
+                        runtime observation
+```
+
+The App consumes and exposes the system; it does **not silently redefine the canonical core**.
+
+---
+
+## ◇ THE IDEA
 
 **Fānus** (فانوس) means *lantern*.
 
@@ -30,7 +52,7 @@ The application explores how an AI experience can preserve meaningful context **
 | **Specialization** | Domain-aware model routing |
 | **Context files** | Optional user-provided text context |
 
-The goal is not to build another feature-heavy chatbot dashboard. The interface is intentionally restrained.
+The goal is not another feature-heavy chatbot dashboard. The interface is intentionally restrained.
 
 ---
 
@@ -64,79 +86,24 @@ The current Seal-code mechanism is a **bearer access mechanism**: possession of 
 
 ---
 
-## 🧭 ECOSYSTEM
-
-<pre>                    FĀNUS
-                      │
-        ┌─────────────┼─────────────┐
-        ▼             ▼             ▼
- Living Seal       Presence        App
- canonical       runtime /       direct
- foundation       observe       experience
-                      │
-                      ▼
-                  Fanus 1</pre>
-
-**Fanus-Living-Seal** — canonical conceptual and technical foundation.
-
-**fanus-presence** — presence, runtime, verification, and engineering-observability surface.
-
-**fanus-app** — direct conversational interface and Living Seal interaction.
-
-The App should consume and expose the system; it should **not silently redefine the canonical core**.
-
----
-
-## ◇ DESIGN SYSTEM
-
-<pre>DARK CANVAS
-      +
-EMERALD SIGNAL
-      +
-FINE GRID
-      +
-HAIRLINE BORDERS
-      +
-QUIET GLOW
-      +
-PERSIAN TYPOGRAPHY
-      +
-MINIMAL CONTROLS</pre>
-
-The visual system is deliberately calm.
-
-No unnecessary dashboards.  
-No visual noise.  
-No artificial complexity.
-
-**The interface should feel like an instrument, not a toy.**
-
----
-
 ## ⚙️ ARCHITECTURE
 
-<pre>fanus-app/
+```text
+fanus-app/
 │
 ├── index.html
-│   └── browser UI + client interaction
-│
 ├── api/
 │   ├── chat.js
-│   │   └── model routing + conversation context
 │   ├── seal.js
-│   │   └── Seal storage / retrieval
 │   └── specializations.js
-│       └── domain detection + specialization prompts
-│
 ├── assets/
-│   └── fanus-app-hero.svg
-│
-├── vercel.json
-└── README.md</pre>
+└── vercel.json
+```
 
 ### Request flow
 
-<pre>Browser
+```text
+Browser
   │
   ├── conversation ───────► /api/chat
   │                              │
@@ -147,7 +114,8 @@ No artificial complexity.
   │
   └── Seal operations ─────► /api/seal
                                  │
-                                 └── Upstash Redis</pre>
+                                 └── Upstash Redis
+```
 
 Provider credentials are intended to remain server-side through deployment environment variables.
 
@@ -155,16 +123,7 @@ Provider credentials are intended to remain server-side through deployment envir
 
 ## 🧠 MODEL ROUTING
 
-The specialization layer currently recognizes domains including:
-
-- physics, chemistry, biology, mathematics
-- AI and software engineering
-- philosophy, psychology, sociology, history, linguistics
-- music, visual art, literature, architecture, cinema
-- cybersecurity, data, robotics
-- medicine, psychiatry, genetics
-- economics, law, entrepreneurship
-- mysticism, mythology, ethics
+The specialization layer currently recognizes domains across science, software, humanities, arts, cybersecurity, medicine, economics, law, entrepreneurship, mythology, and ethics.
 
 Detected specializations can influence model selection and response context.
 
@@ -176,16 +135,7 @@ Detected specializations can influence model selection and response context.
 
 This is an experimental application, not a security-certified system.
 
-### Never commit
-
-<pre>API keys
-access tokens
-passwords
-private credentials
-user secrets
-private datasets</pre>
-
-### Current protections
+Current protections include:
 
 - request/body size limits
 - Seal size limits
@@ -196,11 +146,7 @@ private datasets</pre>
 - server-side provider credentials
 - provider fallback handling
 
-### Seal storage
-
 Generated Seal records are stored in Upstash Redis with a one-year expiration.
-
-The current model therefore depends on both **code secrecy** and **storage configuration**.
 
 ---
 
@@ -225,72 +171,57 @@ The current model therefore depends on both **code secrecy** and **storage confi
 
 ---
 
-## 🚀 DEPLOYMENT
-
-The repository is structured for **Vercel serverless deployment**.
-
-<pre>git clone https://github.com/aminshahsaheb/fanus-app.git
-cd fanus-app</pre>
-
-Configure the required environment variables in Vercel, then deploy the repository.
-
-### Production surface
-
-**Fānus App**  
-https://fanus-app.vercel.app
-
----
-
-## ◈ ENVIRONMENT
-
-The application may use provider credentials for:
-
-<pre>ANTHROPIC_API_KEY
-GROK_API_KEY
-DEEPSEEK_API_KEY
-GEMINI_API_KEY
-MISTRAL_API_KEY
-GROQ_API_KEY
-TAVILY_API_KEY
-
-UPSTASH_REDIS_REST_URL
-UPSTASH_REDIS_REST_TOKEN</pre>
-
-Only configure providers you actually intend to use.
-
----
-
-## ◇ PRINCIPLES
+## ◈ PRINCIPLES
 
 ### Honesty over Flattery
+
 The system should remain capable of correction, disagreement, and uncertainty.
 
 ### Continuity without Captivity
+
 Context should support continuity without becoming a mechanism for control.
 
 ### Human Agency
+
 The human remains the authority over their own interaction and contextual data.
 
 ### Context over Performance
+
 Preserve what matters instead of merely simulating personality.
 
 ### Minimal Interface
+
 Less interface.  
 More presence.
 
 ---
 
-## ◈ STATUS
+## 🚀 DEPLOYMENT
 
-Fānus App is an **active experimental system**.
+The repository is structured for **Vercel serverless deployment**.
 
-The architecture and interaction model may evolve alongside the broader Fānus ecosystem.
+```bash
+git clone https://github.com/aminshahsaheb/fanus-app.git
+cd fanus-app
+```
 
-For the canonical protocol and deeper system research, refer to **Fanus-Living-Seal**.
+Configure the required environment variables in Vercel, then deploy.
 
-For runtime, verification, and observability work, refer to **fanus-presence**.
+**Production surface:** https://fanus-app.vercel.app
 
 ---
+
+## ◇ STATUS
+
+Fānus App is an **active experimental user-facing system**.
+
+Its architectural position is explicit:
+
+**App = experience.  
+Living-Seal = canonical core.  
+Presence = public / verification / observation surface.**
+
+The application can evolve without becoming a second source of truth for Fānus.
 
 <p align="center"><strong>FĀNUS</strong><br><sub>Living Seal · Conversation · Context · Agency</sub></p>
 <p align="center">Ѧ-Ⱥ</p>
